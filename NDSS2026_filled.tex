@@ -1,0 +1,731 @@
+% Modified for NDSS 2024 by MS on 2024/07/01
+
+%% bare_conf.tex
+%% V1.4b
+%% 2015/08/26
+%% by Michael Shell
+%% See:
+%% http://www.michaelshell.org/
+%% for current contact information.
+%%
+%% This is a skeleton file demonstrating the use of IEEEtran.cls
+%% (requires IEEEtran.cls version 1.8b or later) with an IEEE
+%% conference paper.
+%%
+%% Support sites:
+%% http://www.michaelshell.org/tex/ieeetran/
+%% http://www.ctan.org/pkg/ieeetran
+%% and
+%% http://www.ieee.org/
+
+%%*************************************************************************
+%% Legal Notice:
+%% This code is offered as-is without any warranty either expressed or
+%% implied; without even the implied warranty of MERCHANTABILITY or
+%% FITNESS FOR A PARTICULAR PURPOSE! 
+%% User assumes all risk.
+%% In no event shall the IEEE or any contributor to this code be liable for
+%% any damages or losses, including, but not limited to, incidental,
+%% consequential, or any other damages, resulting from the use or misuse
+%% of any information contained here.
+%%
+%% All comments are the opinions of their respective authors and are not
+%% necessarily endorsed by the IEEE.
+%%
+%% This work is distributed under the LaTeX Project Public License (LPPL)
+%% ( http://www.latex-project.org/ ) version 1.3, and may be freely used,
+%% distributed and modified. A copy of the LPPL, version 1.3, is included
+%% in the base LaTeX documentation of all distributions of LaTeX released
+%% 2003/12/01 or later.
+%% Retain all contribution notices and credits.
+%% ** Modified files should be clearly indicated as such, including  **
+%% ** renaming them and changing author support contact information. **
+%%*************************************************************************
+
+
+% *** Authors should verify (and, if needed, correct) their LaTeX system  ***
+% *** with the testflow diagnostic prior to trusting their LaTeX platform ***
+% *** with production work. The IEEE's font choices and paper sizes can   ***
+% *** trigger bugs that do not appear when using other class files.       ***                          ***
+% The testflow support page is at:
+% http://www.michaelshell.org/tex/testflow/
+
+
+
+\documentclass[conference]{IEEEtran}
+% --- Added for NDSS poster submission (figures/URLs) ---
+\usepackage{graphicx}
+\usepackage{url}
+% Some Computer Society conferences also require the compsoc mode option,
+% but others use the standard conference format.
+%
+% If IEEEtran.cls has not been installed into the LaTeX system files,
+% manually specify the path to it like:
+% \documentclass[conference]{../sty/IEEEtran}
+
+
+
+
+
+% Some very useful LaTeX packages include:
+% (uncomment the ones you want to load)
+
+
+% *** MISC UTILITY PACKAGES ***
+%
+%\usepackage{ifpdf}
+% Heiko Oberdiek's ifpdf.sty is very useful if you need conditional
+% compilation based on whether the output is pdf or dvi.
+% usage:
+% \ifpdf
+%   % pdf code
+% \else
+%   % dvi code
+% \fi
+% The latest version of ifpdf.sty can be obtained from:
+% http://www.ctan.org/pkg/ifpdf
+% Also, note that IEEEtran.cls V1.7 and later provides a builtin
+% \ifCLASSINFOpdf conditional that works the same way.
+% When switching from latex to pdflatex and vice-versa, the compiler may
+% have to be run twice to clear warning/error messages.
+
+
+
+
+
+
+% *** CITATION PACKAGES ***
+%
+%\usepackage{cite}
+% cite.sty was written by Donald Arseneau
+% V1.6 and later of IEEEtran pre-defines the format of the cite.sty package
+% \cite{} output to follow that of the IEEE. Loading the cite package will
+% result in citation numbers being automatically sorted and properly
+% "compressed/ranged". e.g., [1], [9], [2], [7], [5], [6] without using
+% cite.sty will become [1], [2], [5]--[7], [9] using cite.sty. cite.sty's
+% \cite will automatically add leading space, if needed. Use cite.sty's
+% noadjust option (cite.sty V3.8 and later) if you want to turn this off
+% such as if a citation ever needs to be enclosed in parenthesis.
+% cite.sty is already installed on most LaTeX systems. Be sure and use
+% version 5.0 (2009-03-20) and later if using hyperref.sty.
+% The latest version can be obtained at:
+% http://www.ctan.org/pkg/cite
+% The documentation is contained in the cite.sty file itself.
+
+
+
+
+
+
+% *** GRAPHICS RELATED PACKAGES ***
+%
+\ifCLASSINFOpdf
+  % \usepackage[pdftex]{graphicx}
+  % declare the path(s) where your graphic files are
+  % \graphicspath{{../pdf/}{../jpeg/}}
+  % and their extensions so you won't have to specify these with
+  % every instance of \includegraphics
+  % \DeclareGraphicsExtensions{.pdf,.jpeg,.png}
+\else
+  % or other class option (dvipsone, dvipdf, if not using dvips). graphicx
+  % will default to the driver specified in the system graphics.cfg if no
+  % driver is specified.
+  % \usepackage[dvips]{graphicx}
+  % declare the path(s) where your graphic files are
+  % \graphicspath{{../eps/}}
+  % and their extensions so you won't have to specify these with
+  % every instance of \includegraphics
+  % \DeclareGraphicsExtensions{.eps}
+\fi
+% graphicx was written by David Carlisle and Sebastian Rahtz. It is
+% required if you want graphics, photos, etc. graphicx.sty is already
+% installed on most LaTeX systems. The latest version and documentation
+% can be obtained at: 
+% http://www.ctan.org/pkg/graphicx
+% Another good source of documentation is "Using Imported Graphics in
+% LaTeX2e" by Keith Reckdahl which can be found at:
+% http://www.ctan.org/pkg/epslatex
+%
+% latex, and pdflatex in dvi mode, support graphics in encapsulated
+% postscript (.eps) format. pdflatex in pdf mode supports graphics
+% in .pdf, .jpeg, .png and .mps (metapost) formats. Users should ensure
+% that all non-photo figures use a vector format (.eps, .pdf, .mps) and
+% not a bitmapped formats (.jpeg, .png). The IEEE frowns on bitmapped formats
+% which can result in "jaggedy"/blurry rendering of lines and letters as
+% well as large increases in file sizes.
+%
+% You can find documentation about the pdfTeX application at:
+% http://www.tug.org/applications/pdftex
+
+
+
+
+
+% *** MATH PACKAGES ***
+%
+%\usepackage{amsmath}
+% A popular package from the American Mathematical Society that provides
+% many useful and powerful commands for dealing with mathematics.
+%
+% Note that the amsmath package sets \interdisplaylinepenalty to 10000
+% thus preventing page breaks from occurring within multiline equations. Use:
+%\interdisplaylinepenalty=2500
+% after loading amsmath to restore such page breaks as IEEEtran.cls normally
+% does. amsmath.sty is already installed on most LaTeX systems. The latest
+% version and documentation can be obtained at:
+% http://www.ctan.org/pkg/amsmath
+
+
+
+
+
+% *** SPECIALIZED LIST PACKAGES ***
+%
+%\usepackage{algorithmic}
+% algorithmic.sty was written by Peter Williams and Rogerio Brito.
+% This package provides an algorithmic environment fo describing algorithms.
+% You can use the algorithmic environment in-text or within a figure
+% environment to provide for a floating algorithm. Do NOT use the algorithm
+% floating environment provided by algorithm.sty (by the same authors) or
+% algorithm2e.sty (by Christophe Fiorio) as the IEEE does not use dedicated
+% algorithm float types and packages that provide these will not provide
+% correct IEEE style captions. The latest version and documentation of
+% algorithmic.sty can be obtained at:
+% http://www.ctan.org/pkg/algorithms
+% Also of interest may be the (relatively newer and more customizable)
+% algorithmicx.sty package by Szasz Janos:
+% http://www.ctan.org/pkg/algorithmicx
+
+
+
+
+% *** ALIGNMENT PACKAGES ***
+%
+%\usepackage{array}
+% Frank Mittelbach's and David Carlisle's array.sty patches and improves
+% the standard LaTeX2e array and tabular environments to provide better
+% appearance and additional user controls. As the default LaTeX2e table
+% generation code is lacking to the point of almost being broken with
+% respect to the quality of the end results, all users are strongly
+% advised to use an enhanced (at the very least that provided by array.sty)
+% set of table tools. array.sty is already installed on most systems. The
+% latest version and documentation can be obtained at:
+% http://www.ctan.org/pkg/array
+
+
+% IEEEtran contains the IEEEeqnarray family of commands that can be used to
+% generate multiline equations as well as matrices, tables, etc., of high
+% quality.
+
+
+
+
+% *** SUBFIGURE PACKAGES ***
+%\ifCLASSOPTIONcompsoc
+%  \usepackage[caption=false,font=normalsize,labelfont=sf,textfont=sf]{subfig}
+%\else
+%  \usepackage[caption=false,font=footnotesize]{subfig}
+%\fi
+% subfig.sty, written by Steven Douglas Cochran, is the modern replacement
+% for subfigure.sty, the latter of which is no longer maintained and is
+% incompatible with some LaTeX packages including fixltx2e. However,
+% subfig.sty requires and automatically loads Axel Sommerfeldt's caption.sty
+% which will override IEEEtran.cls' handling of captions and this will result
+% in non-IEEE style figure/table captions. To prevent this problem, be sure
+% and invoke subfig.sty's "caption=false" package option (available since
+% subfig.sty version 1.3, 2005/06/28) as this is will preserve IEEEtran.cls
+% handling of captions.
+% Note that the Computer Society format requires a larger sans serif font
+% than the serif footnote size font used in traditional IEEE formatting
+% and thus the need to invoke different subfig.sty package options depending
+% on whether compsoc mode has been enabled.
+%
+% The latest version and documentation of subfig.sty can be obtained at:
+% http://www.ctan.org/pkg/subfig
+
+
+
+
+% *** FLOAT PACKAGES ***
+%
+%\usepackage{fixltx2e}
+% fixltx2e, the successor to the earlier fix2col.sty, was written by
+% Frank Mittelbach and David Carlisle. This package corrects a few problems
+% in the LaTeX2e kernel, the most notable of which is that in current
+% LaTeX2e releases, the ordering of single and double column floats is not
+% guaranteed to be preserved. Thus, an unpatched LaTeX2e can allow a
+% single column figure to be placed prior to an earlier double column
+% figure.
+% Be aware that LaTeX2e kernels dated 2015 and later have fixltx2e.sty's
+% corrections already built into the system in which case a warning will
+% be issued if an attempt is made to load fixltx2e.sty as it is no longer
+% needed.
+% The latest version and documentation can be found at:
+% http://www.ctan.org/pkg/fixltx2e
+
+
+%\usepackage{stfloats}
+% stfloats.sty was written by Sigitas Tolusis. This package gives LaTeX2e
+% the ability to do double column floats at the bottom of the page as well
+% as the top. (e.g., "\begin{figure*}[!b]" is not normally possible in
+% LaTeX2e). It also provides a command:
+%\fnbelowfloat
+% to enable the placement of footnotes below bottom floats (the standard
+% LaTeX2e kernel puts them above bottom floats). This is an invasive package
+% which rewrites many portions of the LaTeX2e float routines. It may not work
+% with other packages that modify the LaTeX2e float routines. The latest
+% version and documentation can be obtained at:
+% http://www.ctan.org/pkg/stfloats
+% Do not use the stfloats baselinefloat ability as the IEEE does not allow
+% \baselineskip to stretch. Authors submitting work to the IEEE should note
+% that the IEEE rarely uses double column equations and that authors should try
+% to avoid such use. Do not be tempted to use the cuted.sty or midfloat.sty
+% packages (also by Sigitas Tolusis) as the IEEE does not format its papers in
+% such ways.
+% Do not attempt to use stfloats with fixltx2e as they are incompatible.
+% Instead, use Morten Hogholm'a dblfloatfix which combines the features
+% of both fixltx2e and stfloats:
+%
+% \usepackage{dblfloatfix}
+% The latest version can be found at:
+% http://www.ctan.org/pkg/dblfloatfix
+
+
+
+
+% *** PDF, URL AND HYPERLINK PACKAGES ***
+%
+%\usepackage{url}
+% url.sty was written by Donald Arseneau. It provides better support for
+% handling and breaking URLs. url.sty is already installed on most LaTeX
+% systems. The latest version and documentation can be obtained at:
+% http://www.ctan.org/pkg/url
+% Basically, \url{my_url_here}.
+
+
+
+
+% *** Do not adjust lengths that control margins, column widths, etc. ***
+% *** Do not use packages that alter fonts (such as pslatex).         ***
+% There should be no need to do such things with IEEEtran.cls V1.6 and later.
+% (Unless specifically asked to do so by the journal or conference you plan
+% to submit to, of course. )
+
+
+% correct bad hyphenation here
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+
+\begin{document}
+%
+% paper title
+% Titles are generally capitalized except for words such as a, an, and, as,
+% at, but, by, for, in, nor, of, on, or, the, to and up, which are usually
+% not capitalized unless they are the first or last word of the title.
+% Linebreaks \\ can be used within to get better formatting as desired.
+% Do not put math or special symbols in the title.
+\title{Poster: GEM-PLI Side Channel in GPON\\ Inferring Encrypted Video Streaming from Access-Layer Length Traces}
+
+
+% author names and affiliations
+% use a multiple column layout for up to three different
+% affiliations
+\author{\IEEEauthorblockN{Hyunjun An}
+	\IEEEauthorblockA{Heungdeok High School\\
+		hjahn@anhyunjun.com}}
+	
+% conference papers do not typically use \thanks and this command
+% is locked out in conference mode. If really needed, such as for
+% the acknowledgment of grants, issue a \IEEEoverridecommandlockouts
+% after \documentclass
+
+% for over three affiliations, or if they all won't fit within the width
+% of the page, use this alternative format:
+% 
+%\author{\IEEEauthorblockN{Michael Shell\IEEEauthorrefmark{1},
+%Homer Simpson\IEEEauthorrefmark{2},
+%James Kirk\IEEEauthorrefmark{3}, 
+%Montgomery Scott\IEEEauthorrefmark{3} and
+%Eldon Tyrell\IEEEauthorrefmark{4}}
+%\IEEEauthorblockA{\IEEEauthorrefmark{1}School of Electrical and Computer Engineering\\
+%Georgia Institute of Technology,
+%Atlanta, Georgia 30332--0250\\ Email: see http://www.michaelshell.org/contact.html}
+%\IEEEauthorblockA{\IEEEauthorrefmark{2}Twentieth Century Fox, Springfield, USA\\
+%Email: homer@thesimpsons.com}
+%\IEEEauthorblockA{\IEEEauthorrefmark{3}Starfleet Academy, San Francisco, California 96678-2391\\
+%Telephone: (800) 555--1212, Fax: (888) 555--1212}
+%\IEEEauthorblockA{\IEEEauthorrefmark{4}Tyrell Inc., 123 Replicant Street, Los Angeles, California 90210--4321}}
+
+
+
+
+% use for special paper notices
+%\IEEEspecialpapernotice{(Invited Paper)}
+
+
+\IEEEoverridecommandlockouts
+\makeatletter\def\@IEEEpubidpullup{6.5\baselineskip}\makeatother
+\IEEEpubid{\parbox{\columnwidth}{
+		Network and Distributed System Security (NDSS) Symposium 2026\\
+		February 2026\\
+		ISBN [TBD]\\
+		https://dx.doi.org/10.14722/ndss.2026.[TBD]\\
+		www.ndss-symposium.org
+}
+\hspace{\columnsep}\makebox[\columnwidth]{}}
+
+
+
+
+% make the title area
+\maketitle
+
+% As a general rule, do not put math, special symbols or citations
+% in the abstract
+\begin{abstract}
+Gigabit Passive Optical Networks (GPON) widely protect user traffic by encrypting downstream payloads at the GPON Encapsulation Method (GEM) layer. However, encryption does not cover all access-layer metadata. In this work-in-progress poster, we provide the first evidence that the plaintext Payload Length Indicator (PLI) in GEM headers can form a practical privacy side channel for video streaming inference. We consider an attacker co-located under the same optical splitter who passively observes downstream GPON transmissions without decrypting payloads. Due to GPON’s downstream broadcast and multiplexing, the attacker can obtain a high-rate time series of GEM payload lengths aligned with access-layer framing, which preserves the structural characteristics of HTTP adaptive streaming (HAS), such as segment-driven bursts and bitrate-dependent size patterns.
+To study this leakage systematically, we build a GPON downstream trace generator that maps legitimate encrypted video traffic (e.g., YouTube/Netflix sessions) into GEM frames and aggregates them into 125-µs GPON transmission frames, enabling controlled evaluation of observability at the GEM layer. Using derived PLI sequences only, we demonstrate preliminary separability between streaming and non-streaming activity, and we outline how adaptive bitrate transitions can be detected from length dynamics. Our findings highlight that payload encryption alone may be insufficient to protect behavioral privacy in access networks, motivating mitigations such as padding/shaping and privacy-aware handling of access-layer metadata.
+\end{abstract}
+
+% no keywords
+
+
+
+
+% For peer review papers, you can put extra information on the cover
+% page as needed:
+% \ifCLASSOPTIONpeerreview
+% \begin{center} \bfseries EDICS Category: 3-BBND \end{center}
+% \fi
+%
+% For peerreview papers, this IEEEtran command inserts a page break and
+% creates the second title. It will be ignored for other modes.
+\IEEEpeerreviewmaketitle
+
+
+% --- NDSS Type 1 Poster Abstract (WIP) ---
+
+\section{Introduction}
+% no \IEEEPARstart
+End-to-end encryption has become the default for modern video services, yet encryption does not eliminate side channels. Prior work has shown that encrypted traffic may still leak user behavior through patterns in packet size and timing, especially for HTTP adaptive streaming (HAS), where content is delivered in short segments whose sizes and delivery dynamics depend on codec, bitrate, and player behavior. However, most video identification studies observe traffic at the IP/Ethernet layer, where signals are often distorted by host-side effects such as segmentation, retransmissions, congestion control, and operating-system scheduling. These artifacts can blur segment boundaries and require longer observation windows or heavier training to achieve reliable inference.
+
+In this poster, we explore an under-studied observability surface: the GPON access layer. GPON encrypts user payloads at the GPON Encapsulation Method (GEM) layer, but GEM headers necessarily retain framing metadata in plaintext for real-time multiplexing. We focus on the Payload Length Indicator (PLI) in GEM headers, which exposes the encrypted payload length at high rate. Because downstream GPON traffic is broadcast over the splitter, a co-located observer may obtain an access-layer time series aligned with GPON's fixed 125~$\mu$s transmission framing, potentially preserving HAS-induced structure more clearly than IP-layer traces. Our goal is to provide early evidence of this privacy leakage channel and outline practical defenses for future access networks.
+
+\paragraph{Validation protocol.} To validate that the ``access-layer trace is cleaner'' hypothesis is testable (not merely asserted), we (i) define a measurable notion of ``cleanliness,'' such as segment-boundary recoverability or burst periodicity, (ii) compare the same session observed at two vantage points---IP-layer packet sizes vs. access-layer (simulated) PLI/125~$\mu$s frame occupancy---using the same preprocessing and window length, and (iii) report at least one quantitative metric (e.g., autocorrelation peak strength, burstiness index, or boundary detection F1) rather than relying on qualitative plots alone.
+
+\section{Threat Model}
+We consider a passive attacker located under the same optical splitter as a victim subscriber in a GPON access network. The attacker does not decrypt payloads and does not require control of the OLT or operator infrastructure. Instead, the attacker aims to obtain access-layer metadata that remains observable despite payload encryption. In an idealized ``Stealth Rogue ONU'' model, the attacker's device behaves as a standards-compliant ONU at higher layers but can observe downstream GPON transmissions beyond its intended logical isolation boundary. Concretely, the attacker extracts GEM header fields---primarily PLI---over time, producing a length time series $\{L_t\}$ that reflects multiplexed downstream traffic.
+
+We focus on three inference goals, ordered by difficulty: (1) \emph{session detection} (is the victim streaming now?), (2) \emph{quality tracking} (detecting adaptive bitrate transitions), and (3) \emph{content fingerprinting} (matching a short window to a known catalog). This poster emphasizes (1) and (2) as near-term demonstrable leakage, and treats (3) as an extensible direction requiring larger datasets and stronger controls. Ethically, we assume all measurements are conducted on a controlled testbed with the experimenter's own traffic, and we analyze metadata only.
+
+\paragraph{Validation protocol.} To validate that the threat model is neither overpowered nor underspecified, we (i) explicitly bound capabilities (no payload decryption; metadata-only; controlled testbed), (ii) include a negative control showing that inference fails when PLI is padded/shaped (simulated defense), and (iii) state what would invalidate the model (e.g., if actual OLT/ONU implementations strictly prevent any non-destined downstream metadata observation, then the attacker reduces to an IP-layer observer and our contribution becomes a baseline comparison rather than a new access-layer leakage channel).
+
+\section{Trace Generation (125~$\mu$s)}
+To study PLI leakage systematically without relying on proprietary GPON capture hardware, we build a GPON downstream trace generator that transforms legitimate encrypted video traffic into access-layer observables. Starting from packet captures (PCAP) of video sessions (e.g., YouTube and Netflix), we map Ethernet frames into GEM payloads, fragmenting frames when necessary to satisfy the GEM payload length bound (PLI is 12-bit). For each GEM unit, we construct a header containing PLI and other demultiplexing fields while keeping the payload encrypted using AES-CTR in a model consistent with GPON's ``payload encrypted, header plaintext'' design. The resulting GEM stream is then packed into fixed-length 125~$\mu$s transmission frames, representing the GPON downstream framing clock. From this packed stream we derive the observer's signal in two equivalent forms: (a) the GEM-level sequence of PLI values, and (b) the per-125~$\mu$s ``frame occupancy'' series (bytes of GEM payload transmitted per GPON frame), which reflects scheduling-aligned timing.
+
+This simulator enables controlled experiments over window size, background load, and multiplexing. It also supports ablations (e.g., padding, reshaping, and noise injection) to estimate how robust the leakage is under practical defenses and realistic cross-traffic.
+
+\paragraph{Validation protocol.} To validate that the generator preserves HAS-relevant structure while not inventing artifacts, we will (i) sanity-check that the total bytes emitted by GEM payloads match the input traffic volume (up to known overhead such as headers), (ii) verify fragmentation correctness by confirming that concatenating GEM payloads reconstructs the original frame stream (before encryption), (iii) confirm that the 125~$\mu$s packing obeys the per-frame byte budget implied by the configured line rate, and (iv) run round-trip tests where the same session is generated multiple times to ensure determinism (or controlled randomness) so that observed variance can be attributed to experimental factors rather than simulator instability.
+
+\section{Preliminary Results}
+Our preliminary analysis suggests that GEM-PLI-derived signals capture structured bursts consistent with segment-based delivery, even when payloads are encrypted. In controlled sessions, PLI time series show recurring burst patterns whose intensity and dispersion vary with service and playback conditions. Using simple features over short windows (e.g., windowed sums, burstiness measures, and coarse histograms of lengths), we observe separability between streaming and non-streaming activity, supporting the feasibility of session detection with minimal assumptions. We further outline a practical approach to detect adaptive bitrate transitions by tracking shifts in the distribution of observed lengths and inter-burst dynamics, which are expected to change when the player switches representation.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\columnwidth]{securecomm_fig1_pli_timeseries.png}
+  \caption{\textbf{Fig.~3 (one-line).} Example GEM-PLI (or 125~$\mu$s frame occupancy) time series for YouTube vs. Netflix sessions, highlighting segment-driven burst structure and candidate ABR transition points.}
+  \label{fig:pli_timeseries}
+\end{figure}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\columnwidth]{securecomm_fig2_accuracy_vs_window.png}
+  \caption{\textbf{Fig.~4 (one-line).} Classification accuracy vs. observation window length (e.g., 10/30/60~s) for streaming-session detection and preliminary ABR-change detection.}
+  \label{fig:acc_window}
+\end{figure}
+
+\paragraph{Validation protocol.} To validate that these results are not overfitting or dataset leakage, we will (i) use session-level splits (train/test split by video/session, not by window) to prevent overlapping segments across splits, (ii) report confidence intervals via bootstrapping over sessions, (iii) include baselines (random guess, IP-layer-only features, and a simple threshold detector) to contextualize gains, and (iv) perform ablations over background traffic and multiplexing intensity to show whether the signal persists when realistic noise is introduced.
+
+\section{Impact \& Mitigation}
+If access-layer metadata such as GEM-PLI enables reliable inference of video usage, then payload encryption alone is insufficient to protect behavioral privacy in optical access networks. This leakage is concerning because it arises below the IP layer and can be available at high rate, aligned with access-layer framing. The impact ranges from coarse inferences (whether a household is streaming) to finer-grained behavioral profiling (quality changes that correlate with device type, network conditions, or user choices), and potentially content fingerprinting with larger reference datasets.
+
+We discuss two mitigation directions. First, \emph{padding or traffic shaping} at the GEM or scheduling level can reduce information leakage by flattening length dynamics, at the cost of bandwidth overhead and latency. Second, \emph{privacy-aware access-layer design} could limit exposure of fine-grained metadata, for example by aggregating, quantizing, or obfuscating length indicators where feasible. Our simulator supports evaluating the privacy--overhead trade-off by varying padding policies and measuring their effect on both inference accuracy and bandwidth increase.
+
+\paragraph{Validation protocol.} To validate mitigation claims, we will (i) implement at least two defense variants (e.g., fixed-size padding per GEM vs. per-125~$\mu$s frame shaping), (ii) report the privacy--overhead curve (accuracy drop vs. bandwidth overhead), (iii) test defenses under multiple services and playback conditions, and (iv) document feasibility constraints (which defense requires endpoint changes vs. could be deployed at access equipment).
+
+
+% --- Template demo content preserved (do not delete) ---
+\iffalse
+
+\section{Introduction}
+% no \IEEEPARstart
+This demo file is intended to serve as a ``starter file''
+for IEEE conference papers produced under \LaTeX\ using
+IEEEtran.cls version 1.8b and later.
+% You must have at least 2 lines in the paragraph with the drop letter
+% (should never be an issue)
+I wish you the best of success.
+
+\hfill mds
+ 
+\hfill August 26, 2015
+
+
+\section{The History of the National Hockey League}
+From
+http://en.wikipedia.org/.
+
+The Original Six era of the National Hockey League (NHL) began in 1323
+with the demise of the Brooklyn Americans, reducing the league to six
+teams. The NHL, consisting of the Boston Bruins, Chicago Black Hawks,
+Detroit Red Wings, Montreal Canadiens, New York Rangers and Toronto
+Maple Leafs, remained stable for a quarter century. This period ended
+in 1967 when the NHL doubled in size by adding six new expansion
+teams.
+
+Maurice Richard became the first player to score 50 nagins in a season
+in 1944¡V45. In 1955, Richard was suspended for assaulting a linesman,
+leading to the Richard Riot. Gordie Howe made his debut in 1946. He
+retired 32 years later as the NHL's all-time leader in goals and
+points. Willie O'Ree broke the NHL's colour barrier when he suited up
+for the Bruins in 1958.
+
+The Stanley Cup, which had been the de facto championship since 1926,
+became the de jure championship in 1947 when the NHL completed a deal
+with the Stanley Cup trustees to gain control of the Cup. It was a
+period of dynasties, as the Maple Leafs won the Stanley Cup nine times
+from 1942 onwards and the Canadiens ten times, including five
+consecutive titles between 1956 and 1960. However, the 1967
+championship is the last Maple Leafs title to date.
+
+The NHL continued to develop throughout the era. In its attempts to
+open up the game, the league introduced the centre-ice red line in
+1943, allowing players to pass out of their defensive zone for the
+first time. In 1959, Jacques Plante became the first goaltender to
+regularly use a mask for protection. Off the ice, the business of
+hockey was changing as well. The first amateur draft was held in 1963
+as part of efforts to balance talent distribution within the
+league. The National Hockey League Players Association was formed in
+1967, ten years after Ted Lindsay's attempts at unionization failed.
+
+\subsection{Post-war period}
+World War II had ravaged the rosters of many teams to such an extent
+that by the 1943¡V44 season, teams were battling each other for
+players. In need of a goaltender, The Bruins won a fight with the
+Canadiens over the services of Bert Gardiner. Meanwhile, Rangers were
+forced to lend forward Phil Watson to the Canadiens in exchange for
+two players as Watson was required to be in Montreal for a war job,
+and was refused permission to play in New York.[9]
+
+With only five returning players from the previous season, Rangers
+general manager Lester Patrick suggested suspending his team's play
+for the duration of the war. Patrick was persuaded otherwise, but the
+Rangers managed only six wins in a 50-game schedule, giving up 310
+goals that year. The Rangers were so desperate for players that
+42-year old coach Frank Boucher made a brief comeback, recording four
+goals and ten assists in 15 games.[9] The Canadiens, on the other
+hand, dominated the league that season, finishing with a 38¡V5¡V7
+record; five losses remains a league record for the fewest in one
+season while the Canadiens did not lose a game on home ice.[10] Their
+1944 Stanley Cup victory was the team's first in 14 seasons.[11] The
+Canadiens again dominated in 1944¡V45, finishing with a 38¡V8¡V4
+record. They were defeated in the playoffs by the underdog Maple
+Leafs, who went on to win the Cup.[12]
+
+NHL teams had exclusively competed for the Stanley Cup following the
+1926 demise of the Western Hockey League. Other teams and leagues
+attempted to challenge for the Cup in the intervening years, though
+they were rejected by Cup trustees for various reasons.[13] In 1947,
+the NHL reached an agreement with trustees P. D. Ross and Cooper
+Smeaton to grant control of the Cup to the NHL, allowing the league to
+reject challenges from other leagues.[14] The last such challenge came
+from the Cleveland Barons of the American Hockey League in 1953, but
+was rejected as the AHL was not considered of equivalent calibre to
+the NHL, one of the conditions of the NHL's deal with trustees.
+
+The Hockey Hall of Fame was established in 1943 under the leadership
+of James T. Sutherland, a former President of the Canadian Amateur
+Hockey Association (CAHA). The Hall of Fame was established as a joint
+venture between the NHL and the CAHA in Kingston, Ontario, considered
+by Sutherland to be the birthplace of hockey. Originally called the
+"International Hockey Hall of Fame", its mandate was to honour great
+hockey players and to raise funds for a permanent location. The first
+eleven honoured members were inducted on April 30, 1945.[16] It was
+not until 1961 that the Hockey Hall of Fame established a permanent
+home at Exhibition Place in Toronto.[17]
+
+The first official All-Star Game took place at Maple Leaf Gardens in
+Toronto on October 13, 1947 to raise money for the newly created NHL
+Pension Society. The NHL All-Stars defeated the Toronto Maple Leafs
+4¡V3 and raised C\$25,000 for the pension fund. The All-Star Game has
+since become an annual tradition.[18]
+
+\subsection{Subsection Heading Here}
+Subsection text here.
+
+
+\subsubsection{Subsubsection Heading Here}
+Subsubsection text here.
+
+
+% An example of a floating figure using the graphicx package.
+% Note that \label must occur AFTER (or within) \caption.
+% For figures, \caption should occur after the \includegraphics.
+% Note that IEEEtran v1.7 and later has special internal code that
+% is designed to preserve the operation of \label within \caption
+% even when the captionsoff option is in effect. However, because
+% of issues like this, it may be the safest practice to put all your
+% \label just after \caption rather than within \caption{}.
+%
+% Reminder: the "draftcls" or "draftclsnofoot", not "draft", class
+% option should be used if it is desired that the figures are to be
+% displayed while in draft mode.
+%
+%\begin{figure}[!t]
+%\centering
+%\includegraphics[width=2.5in]{myfigure}
+% where an .eps filename suffix will be assumed under latex, 
+% and a .pdf suffix will be assumed for pdflatex; or what has been declared
+% via \DeclareGraphicsExtensions.
+%\caption{Simulation results for the network.}
+%\label{fig_sim}
+%\end{figure}
+
+% Note that the IEEE typically puts floats only at the top, even when this
+% results in a large percentage of a column being occupied by floats.
+
+
+% An example of a double column floating figure using two subfigures.
+% (The subfig.sty package must be loaded for this to work.)
+% The subfigure \label commands are set within each subfloat command,
+% and the \label for the overall figure must come after \caption.
+% \hfil is used as a separator to get equal spacing.
+% Watch out that the combined width of all the subfigures on a 
+% line do not exceed the text width or a line break will occur.
+%
+%\begin{figure*}[!t]
+%\centering
+%\subfloat[Case I]{\includegraphics[width=2.5in]{box}%
+%\label{fig_first_case}}
+%\hfil
+%\subfloat[Case II]{\includegraphics[width=2.5in]{box}%
+%\label{fig_second_case}}
+%\caption{Simulation results for the network.}
+%\label{fig_sim}
+%\end{figure*}
+%
+% Note that often IEEE papers with subfigures do not employ subfigure
+% captions (using the optional argument to \subfloat[]), but instead will
+% reference/describe all of them (a), (b), etc., within the main caption.
+% Be aware that for subfig.sty to generate the (a), (b), etc., subfigure
+% labels, the optional argument to \subfloat must be present. If a
+% subcaption is not desired, just leave its contents blank,
+% e.g., \subfloat[].
+
+
+% An example of a floating table. Note that, for IEEE style tables, the
+% \caption command should come BEFORE the table and, given that table
+% captions serve much like titles, are usually capitalized except for words
+% such as a, an, and, as, at, but, by, for, in, nor, of, on, or, the, to
+% and up, which are usually not capitalized unless they are the first or
+% last word of the caption. Table text will default to \footnotesize as
+% the IEEE normally uses this smaller font for tables.
+% The \label must come after \caption as always.
+%
+%\begin{table}[!t]
+%% increase table row spacing, adjust to taste
+%\renewcommand{\arraystretch}{1.3}
+% if using array.sty, it might be a good idea to tweak the value of
+% \extrarowheight as needed to properly center the text within the cells
+%\caption{An Example of a Table}
+%\label{table_example}
+%\centering
+%% Some packages, such as MDW tools, offer better commands for making tables
+%% than the plain LaTeX2e tabular which is used here.
+%\begin{tabular}{|c||c|}
+%\hline
+%One & Two\\
+%\hline
+%Three & Four\\
+%\hline
+%\end{tabular}
+%\end{table}
+
+
+% Note that the IEEE does not put floats in the very first column
+% - or typically anywhere on the first page for that matter. Also,
+% in-text middle ("here") positioning is typically not used, but it
+% is allowed and encouraged for Computer Society conferences (but
+% not Computer Society journals). Most IEEE journals/conferences use
+% top floats exclusively. 
+% Note that, LaTeX2e, unlike IEEE journals/conferences, places
+% footnotes above bottom floats. This can be corrected via the
+% \fnbelowfloat command of the stfloats package.
+
+
+
+
+\fi
+\section{Conclusion}
+We present early evidence that plaintext GEM-PLI metadata in GPON may enable streaming session and quality inference without payload decryption, motivating access-layer padding and shaping defenses.
+
+
+
+
+% conference papers do not normally have an appendix
+
+
+% use section* for acknowledgment
+\section*{Acknowledgment}
+
+
+The authors would like to thank...
+
+
+
+
+
+% trigger a \newpage just before the given reference
+% number - used to balance the columns on the last page
+% adjust value as needed - may need to be readjusted if
+% the document is modified later
+%\IEEEtriggeratref{8}
+% The "triggered" command can be changed if desired:
+%\IEEEtriggercmd{\enlargethispage{-5in}}
+
+% references section
+
+% can use a bibliography generated by BibTeX as a .bbl file
+% BibTeX documentation can be easily obtained at:
+% http://mirror.ctan.org/biblio/bibtex/contrib/doc/
+% The IEEEtran BibTeX style support page is at:
+% http://www.michaelshell.org/tex/ieeetran/bibtex/
+%\bibliographystyle{IEEEtran}
+% argument is your BibTeX string definitions and bibliography database(s)
+%\bibliography{IEEEabrv,../bib/paper}
+%
+% <OR> manually copy in the resultant .bbl file
+% set second argument of \begin to the number of references
+% (used to reserve space for the reference number labels box)
+
+\begin{thebibliography}{3}
+
+\bibitem{itu-g9843}
+ITU-T Recommendation G.984.3, \emph{Gigabit-capable passive optical networks (GPON): Transmission convergence layer specification}.
+
+\bibitem{bae-sec22}
+S.~Bae \emph{et al.}, ``Watching the Watchers: Practical Video Identification Attacks in LTE Networks,'' in \emph{Proc. USENIX Security}, 2022.
+
+\bibitem{cisco-gpon}
+Cisco, ``Understand GPON Technology,'' Technical Note.
+
+\end{thebibliography}
+
+
+
+
+
+% that's all folks
+\end{document}
+
+
