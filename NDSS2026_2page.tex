@@ -425,6 +425,7 @@ End-to-end encryption (HTTPS) protects video content, but it does not eliminate 
 
 \textbf{GEM Framing} In GPON Network, upper layer traffic (e.g., Ethernet frames carrying TCP/IP packets) in the GEM Payload Field transmitted via GPON Encapsulation Method (GEM) Frames. Downstream GEM payloads are often encrypted for confidentiality (depending on ISP configuration~\cite{itu-g9843}). However, the GEM Port-ID (used to demultiplex services/flows) and the Payload Length Indicator (PLI), which encodes the payload size, are transmitted in plaintext. Thus, an attacker can extract a victim’s encrypted payload lengths from consecutive PLI values (optionally grouped by Port-ID), even without decrypting the payload contents.
 
+\textbf{Video Identification} To identify a video from the encrypted traffic, the adversary mainly exploits information leakage stemming from the operational logic of HAS, which is the dominant streaming protocol used by popular streaming services. HAS segments a video into smaller chunks that share an identical playback time. Each chunk has a different size according to its content owing to variable bitrate (VBR) encoding. Thus, a series of such chunks can represent a unique pattern. By grouping a series of chunks using these periods, the adversary can build a concise video fingerprint for each target video.~\cite{bae-sec22}
 
 \section{Threat Model}
 We consider a metadata-only attacker co-located under the same optical splitter as a victim subscriber.
