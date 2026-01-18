@@ -324,7 +324,7 @@
 % not capitalized unless they are the first or last word of the title.
 % Linebreaks \\ can be used within to get better formatting as desired.
 % Do not put math or special symbols in the title.
-\title{Poster: GEM-PLI Side Channel in GPON\\ Inferring Encrypted Video Streaming from Access-Layer Length Traces}
+\title{Poster: GEM-PLI Side Channel in GPON\\ Inferring Encrypted Streaming Traffic}
 
 
 % author names and affiliations
@@ -383,7 +383,7 @@
 % As a general rule, do not put math, special symbols or citations
 % in the abstract
 \begin{abstract}
-Gigabit Passive Optical Networks (GPON), an ITU-T standardized technology widely adopted in fiber-to-the-home(FTTH) networks, supports downstream payload encryption to protect subscribers' traffic. Unfortunately, encryption does not cover all access-layer metadata. This paper presents a preliminary analysis showing that the Payload Length Indicator (PLI) which remains in plaintext in GEM headers forms a side channel that enables inference of video streaming activity. A passive attacker on the same optical splitter of victim can observe downstream PLI and infer victim's video activity(e.g., Youtube). 
+Gigabit Passive Optical Networks (GPON), an ITU-T standardized technology widely adopted in fiber-to-the-home(FTTH) networks, supports downstream payload encryption to protect subscribers' traffic. Unfortunately, encryption does not cover all access-layer metadata. This paper presents a preliminary analysis showing that the Payload Length Indicator (PLI) which remains in plaintext in GEM headers forms a side channel that enables inference of streaming activity. A passive attacker on the same optical splitter of victim can observe downstream PLI and infer victim's traffic streaming activity (e.g., Infering Youtube Video traffic identification). 
 \end{abstract}
 
 
@@ -405,12 +405,13 @@ Gigabit Passive Optical Networks (GPON), an ITU-T standardized technology widely
 
 % --- NDSS Type 1 Poster Abstract (WIP) ---
 
-\section{Introduction}
+\section{Introduction And Motivation}
+As fiber internet access has become dominant in Network Infrastructures, GPON--one of the passive optical network (PON) technologies that is widely adopted by many ISPs to provide Fiber Internet for home (FTTH) and Enterprise--accounted for 54.2\% of FTTH market in 2024~\cite{static}. Since GPON is popular PON technology, it is important to ensure traffic confidentiality. GPON supports AES-based downstream traffic encryption on GPON Encapsulation Method (GEM) Layer. However, some fields of GEM Header remain plaintext such as the Payload Length Indicator (PLI) field used for multiplexing and the Port-ID field used for identifying subscribers' Optical Network Terminals/Units(ONTs/ONUs) (typically called "modem").
+Such plaintext fields may appear innocuous. However, recent studies have demonstrated that such metadata can be used to leak victim's activity (e.g., identifying a victim's web-based video streaming watching activity) ~\cite{bae-sec22}.
+Inspired by prior studies, we researched whether the plaintext PLI field in GPON GEM header can be used to leak victim's privacy on the same optical splitter.
+We conduct a preliminary experimental analysis using a software-based GPON downstream simulator to evaluate whether the plaintext PLI field can be exploited to infer victim activity.
+Using these PLI traces, we present preliminary evidence that Youtube streaming video IDs can be identified by attacker.
 
-End-to-end encryption (HTTPS) protects video content, but it does not eliminate side channels. Video identification attacks exploit the structure of HTTP adaptive streaming (HAS): videos are delivered as short segments, and the resulting size/timing bursts depend on the representation (codec/bitrate) and content. Most prior work observes traffic at the IP/Ethernet layer, where segment patterns are blurred by transport and host effects (TCP segmentation, retransmissions, congestion control, and OS scheduling), often requiring longer windows or heavier training.
-\textbf{Why GPON may be ``cleaner.''} GPON introduces an underexplored vantage point \emph{below} IP: GEM headers must remain plaintext for real-time multiplexing, and they expose the Payload Length Indicator (PLI). Combined with GPON's fixed 125~$\mu$s downstream framing, this yields a scheduling-aligned, high-rate length signal that is less directly affected by host-side packetization artifacts than IP-layer packet sizes.
-
-\textbf{Takeaways (this poster).} (i) We demonstrate a GPON trace generator that produces access-layer observables (PLI/occupancy) from legitimate encrypted video traffic; (ii) we provide preliminary evidence that PLI-derived signals can detect streaming sessions and indicate ABR changes in a controlled test OLT testbed; (iii) we outline mitigation directions and an evaluation method to quantify privacy--overhead trade-offs.
 \section{Background}  
 
 \begin{figure}[!htbp]
@@ -421,7 +422,7 @@ End-to-end encryption (HTTPS) protects video content, but it does not eliminate 
   \label{fig:gpon-encapsulation}
 \end{figure}
 
-\textbf{GPON Topology and GTC Framing} GPON Networks consist of an Optical Line Terminal (OLT) at the ISP and multiple Optical Network Terminals/Units(ONTs/ONUs) deployed at subscribers. A single optical tree can serve up to 32 subscribers (e.g., 1:32 split). In the downstream, the OLT transmits downstream traffic through the splitter. Since the splitter passively distributes the optical signal from the OLT to all ONUs/ONTs on the same splitter, each ONU/ONT can physically receive the downstream transmissions destined for other ONUs/ONTs. At the transmission layer, downstream bytes are carried in GPON Transmission Convergence (GTC) frames sent periodically, whose payload area carries multiple GEM frames(described next).
+\textbf{GPON Topology and GTC Framing} GPON Networks consist of an Optical Line Terminal (OLT) at the ISP and multiple Optical Network Terminals/Units(ONTs/ONUs) (typically called "modem") deployed at subscribers. A single optical tree can serve up to 32 subscribers (e.g., 1:32 split). In the downstream, the OLT transmits downstream traffic through the splitter. Since the splitter passively distributes the optical signal from the OLT to all ONUs/ONTs on the same splitter, each ONU/ONT can physically receive the downstream transmissions destined for other ONUs/ONTs. At the transmission layer, downstream bytes are carried in GPON Transmission Convergence (GTC) frames sent periodically, whose payload area carries multiple GEM frames(described next).
 
 \textbf{GEM Framing} In GPON Network, upper layer traffic (e.g., Ethernet frames carrying TCP/IP packets) in the GEM Payload Field transmitted via GPON Encapsulation Method (GEM) Frames. Downstream GEM payloads are often encrypted for confidentiality (depending on ISP configuration~\cite{itu-g9843}). However, the GEM Port-ID (used to demultiplex services/flows) and the Payload Length Indicator (PLI), which encodes the payload size, are transmitted in plaintext. Thus, an attacker can extract a victim’s encrypted payload lengths from consecutive PLI values (optionally grouped by Port-ID), even without decrypting the payload contents.
 
@@ -503,10 +504,13 @@ ITU-T Recommendation G.984.3, \emph{Gigabit-capable passive optical networks (GP
 S.~Bae \emph{et al.}, ``Watching the Watchers: Practical Video Identification Attacks in LTE Networks,'' in \emph{Proc. USENIX Security}, 2022.
 
 \bibitem{cisco-gpon}
-Cisco, ``Understand GPON Technology,'' Technical Note.
+Cisco, ``Understand GPON Technology,'' Technical Note. - 
 
 \bibitem{github}
-github repository hjaka08 - 
+github repository - https://github.com/hjaka08/GPON
+
+\bibitem{static}
+Fiber-to-the-Home (FTTH) Market Size & Share Analysis - Growth Trends and Forecast (2025 - 2030)  - https://www.mordorintelligence.com/industry-reports/fiber-to-the-home-ftth-market?utm_source=chatgpt.com
 
 \end{thebibliography}
 
