@@ -431,28 +431,29 @@ Using these PLI traces, we present preliminary first evidence that Youtube strea
 \section{Threat Model}
 We consider a attacker on the same optical splitter as a victim.
 \begin{itemize}
-  \item \textbf{Capability:} passively records downstream GEM headers (no payload decryption; no OLT/operator access) 
-  *attacker does not have to get their ONU/ONT linked with OLT so if attacker remove Tx function of optic module, they can entirely record downstream records without being exposed.
-  \item \textbf{Observable:} a length time series from GEM-PLI (or per-125~$\mu$s frame occupancy) for the victim's Port-ID.
-  \item \textbf{Ethics:} We used software-based GEM Simulator which makes GEM packet from ehternet packet files. 
+  \item \textbf{1. Premise:} attacker should have optical capture device (e.g., FPGA, modified ONU that can receive raw GTC frames) directly connecting to splitter and passively records downstream from OLT.
+  *attacker does not have to get their ONU/ONT linked with OLT so if attacker remove Tx function of optic module, they can entirely record downstream records without being exposed. 
+  \item \textbf{2. Capture GEM} then, attacker extract GTC frames from downstream traffic and they get many GEM frames. 
+  \item \textbf{3. Convert GEM PLI to dataset} then, attacker filters GEM frames corresponding to a victim's Port-ID and made a dataset containing PLI values and timestamps.
+  \item \textbf{4. dataset format} the dataset must include start & end time and duration and PLI and sequence information.
 \end{itemize}
 %\section{Trace Generation (125~$\mu$s)}
 %To avoid relying on proprietary GPON capture hardware, we build a GPON downstream trace generator. From a PCAP of encrypted video traffic, we (i) map Ethernet frames into GEM payloads (fragmenting to satisfy the 12-bit PLI limit), (ii) generate plaintext GEM headers (PLI/Port-ID/PTI/HEC), (iii) encrypt payload bytes with AES-CTR (header remains plaintext), and (iv) pack the GEM stream into fixed-length 125~$\mu$s downstream frames consistent with the configured line rate. The attacker signal is then either the GEM-level PLI sequence or the per-frame occupancy series.
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=\linewidth]{fig/attacker_pipeline_diagram_tikz.pdf}
+  \caption{Attacker-side observation pipeline: passive optical capture under the same splitter enables reception of downstream GTC frames, extraction of GEM frames, and construction of a PLI-based dataset (\texttt{gems.csv}).}
+  \label{fig:attacker-pipeline}
+\end{figure}
+
 
 \section{Experiment and Preliminary Results}
-\textbf{Simulator Pipeline}
-\begin{enumerate}\setlength\itemsep{0pt}
-  \item \textbf{Capture:} For each target video $v$ and run $r$, automate playback and record a PCAP trace $p_{v,r}$. 
-  \item \textbf{Simulate GPON:} Parse $p_{v,r}$ and fragment Ethernet frames into GEM units; for each unit, record plaintext \texttt{PLI} and \texttt{t\_start\_us} into \texttt{run$r$.gems.csv}.
-  \item \textbf{Build dataset:} Repeat Step 2 for all runs/videos (parallel + resume) to obtain a trace database of \texttt{*.gems.csv}.
-  \item \textbf{Feature:} Convert each \texttt{gems.csv} into a dense time series by binning PLI into fixed time bins (e.g., 10\,ms).
-  \item \textbf{Train/Test split:} Train a classifier on template runs (e.g., run1--run2) and evaluate on a disjoint run (e.g., run3) for video-ID inference.
-\end{enumerate}%
-We implement a trace-driven, GPON-like downstream simulator to reproduce the access-layer observables exposed by GEM metadata. We capture PCAP traces while streaming YouTube videos under a fixed resolution setting. The simulator fragments Ethernet frames into GEM payloads and synthesizes GEM headers containing Port-ID, PTI, and the 12-bit Payload Length Indicator (PLI). It then packs GEM units into fixed 125,\textmu s downstream time bins, producing a time-aligned sequence of PLI values. Unlike line-rate replay, the simulator preserves original packet timestamps so that idle periods and the bursty structure of adaptive streaming are retained. The simulator outputs structured traces (\texttt{gems.csv}) that expose per-GEM PLI sequences for subsequent analysis. While we do not aim for bit-level equivalence with commercial OLT implementations, our simulator preserves the timing and metadata characteristics relevant to privacy leakage.
+To demonstrate threat model in our experimental environment, we developed a software GPON downstream simulator that reproduces the process of receiving GTC frames, extracting GEM frames, and exporting plaintext GEM header fields into datasets. 
+At first we made packet capture datas (PCAPs) of encrypted video traffic of youtube.  we played 10 videos in our restirected ubuntu computer where SSH, VNC traffic is blocked to minimize 간섭. and we simulated that ehternet packet capture file to records the resulting PLI values and timestamps into CSV traces. 
+These traces approximate the payload length observations available to a real same-splitter adversary and enable systematic evaluation of PLI-based inference.
 
-\textbf{Results of experiment}
 
-\textbf{Results of experiment}
+
 
 
 \section{Conclusion And Discussion}
@@ -502,7 +503,7 @@ We welcome open discussion on this poster. if you would like to contact us, plea
 % set second argument of \begin to the number of references
 % (used to reserve space for the reference number labels box)
 
-\begin{thebibliography}{3}
+\begin{thebibliography}{7}
 
 \bibitem{itu-g9843}
 ITU-T Recommendation G.984.3, \emph{Gigabit-capable passive optical networks (GPON): Transmission convergence layer specification}.
