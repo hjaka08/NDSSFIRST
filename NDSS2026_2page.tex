@@ -449,9 +449,9 @@ We consider a attacker on the same optical splitter as a victim.
 
 \section{Experiment and Preliminary Results}
 To demonstrate threat model in our experimental environment, we developed a software GPON downstream simulator that reproduces the process of receiving GTC frames, extracting GEM frames, and exporting plaintext GEM header fields into datasets. 
-At first we played 10 videos in our restirected ubuntu computer to produce packet capture datas (PCAPs) where SSH, VNC traffic is blocked to minimize interference. then we simulated that PCAPs packet capture file to records the resulting PLI values and timestamps into CSV traces. 
+At first we played each of 10 videos three times in our linux based system to produce packet capture datas (PCAPs) where other streaming traffic(e.g., VNC) is restricted to minimize interference. then we simulated that PCAPs packet capture file to records the resulting PLI values and timestamps into CSV traces. 
 These traces approximate the payload length observations available to a real same-splitter adversary and enable systematic evaluation of PLI-based inference.
-After making dataset, we visualized cumulative PLI - Time Grapgh based on our dataset(Publicly Available on our github repository)~\cite{github}. In conclusion, We could find the corelation between video and PLI.
+After making dataset, we visualized cumulative PLI - Time Grapgh based on our dataset(Publicly Available on our github repository)~\cite{github}. In conclusion, We could find a clear corelation between video and cumulative PLI over time graph; Traces generated from the same video show greatly consistent slopes, which are significantly distincive to distinguish individual videos.
 we assume that when adopted CNN, it is possible to distinguish video Ids using captured PLI values.
 
 
