@@ -431,11 +431,11 @@ Using these PLI traces, we present preliminary first evidence that Youtube strea
 \section{Threat Model}
 We consider a attacker on the same optical splitter as a victim.
 \begin{itemize}
-  \item \textbf{1. Premise:} attacker should have optical capture device (e.g., FPGA, modified ONU that can receive raw GTC frames) directly connecting to splitter and passively records downstream from OLT.
+  \item \textbf{1. Premise:} Attacker should have optical capture device (e.g., FPGA, modified ONU that can receive raw GTC frames) directly connecting to splitter and passively records downstream from OLT.
   *attacker does not have to get their ONU/ONT linked with OLT so if attacker remove Tx function of optic module, they can entirely record downstream records without being exposed. 
-  \item \textbf{2. Capture GEM} then, attacker extract GTC frames from downstream traffic and they get many GEM frames. 
-  \item \textbf{3. Convert GEM PLI to dataset} then, attacker filters GEM frames corresponding to a victim's Port-ID and made a dataset containing PLI values and timestamps.
-  \item \textbf{4. dataset format} the dataset must include start & end time and duration and PLI and sequence information.
+  \item \textbf{2. Collect GEMs} Then, attacker extract GTC frames from downstream traffic and they get many GEM frames. 
+  \item \textbf{3. Convert GEM PLI to dataset} Then, attacker filters GEM frames corresponding to a victim's Port-ID and made a dataset containing PLI values and timestamps.
+  \item \textbf{4. Dataset format} The dataset must include start & end time and duration and PLI and sequence information.
 \end{itemize}
 %\section{Trace Generation (125~$\mu$s)}
 %To avoid relying on proprietary GPON capture hardware, we build a GPON downstream trace generator. From a PCAP of encrypted video traffic, we (i) map Ethernet frames into GEM payloads (fragmenting to satisfy the 12-bit PLI limit), (ii) generate plaintext GEM headers (PLI/Port-ID/PTI/HEC), (iii) encrypt payload bytes with AES-CTR (header remains plaintext), and (iv) pack the GEM stream into fixed-length 125~$\mu$s downstream frames consistent with the configured line rate. The attacker signal is then either the GEM-level PLI sequence or the per-frame occupancy series.
@@ -449,31 +449,31 @@ We consider a attacker on the same optical splitter as a victim.
 
 \section{Experiment and Preliminary Results}
 To demonstrate threat model in our experimental environment, we developed a software GPON downstream simulator that reproduces the process of receiving GTC frames, extracting GEM frames, and exporting plaintext GEM header fields into datasets. 
-At first we made packet capture datas (PCAPs) of encrypted video traffic of youtube.  we played 10 videos in our restirected ubuntu computer where SSH, VNC traffic is blocked to minimize 간섭. and we simulated that ehternet packet capture file to records the resulting PLI values and timestamps into CSV traces. 
+At first we played 10 videos in our restirected ubuntu computer to produce packet capture datas (PCAPs) where SSH, VNC traffic is blocked to minimize interference. then we simulated that PCAPs packet capture file to records the resulting PLI values and timestamps into CSV traces. 
 These traces approximate the payload length observations available to a real same-splitter adversary and enable systematic evaluation of PLI-based inference.
-
+After making dataset, we visualized cumulative PLI - Time Grapgh based on our dataset(Publicly Available on our github repository)~\cite{github}. In conclusion, We could find the corelation between video and PLI.
+we assume that when adopted CNN, it is possible to distinguish video Ids using captured PLI values.
 
 
 
 
 \section{Conclusion And Discussion}
-Our results indicate that payload encryption may be insufficient to ensure traffic confidentiality in GPON networks. 
-Although payload contents are encrypted, plaintext fields such as PLI in GEM headers can be used to infer a victim’s video activity(e.g., Youtube). 
-Mitigations may include padding/traffic shaping to dampen length signatures and metadata-aware protocol designs that reduce or obfuscate length exposure at the access layer. 
+This poster show that payload encryption in GEM is insufficient to ensure traffic confidentiality in GPON networks. 
+Despite Payload Encryption, GPON Network is still vulnerable to inferring streaming activity because PLI in GEM headers can be exploited to infer a victim’s video activity(e.g., Youtube). 
 Future work includes validating our observations on a real GPON testbed. 
-All code and experimental data is publicly available on the our github repository.~\cite{github}
+All code and experimental dataset is publicly available on the our github repository.~\cite{github}
 
-
-\textbf{Mitigation}
-We think~
-
+\textbf{Future Work In Real World.}
+Future Work will be conducted in experimental testbed with Real OLT, ONU and Optical Splitter. We will use FPGA to collect GEM frames.
 
 \textbf{Extent to XGS-PON Networks.}
 Although we entirely focus on GPON in this poster, we believe that XGS-PON Networks are subject to analogous privacy risks. future work includes XGS-PON.
 
-
 \textbf{Open Discussion}
 We welcome open discussion on this poster. if you would like to contact us, please email us.
+
+\section{Acknowledgment}
+Note: High school student authors—please excuse any imperfect wording.
 % (Conclusion and acknowledgments intentionally omitted to satisfy the 2-page poster limit.)
 
 
