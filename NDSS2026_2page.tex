@@ -408,8 +408,7 @@ Gigabit Passive Optical Networks (GPON), an ITU-T standardized technology widely
 
 \section{Introduction And Motivation}
 As fiber internet access has become dominant in Network Infrastructures, GPON--one of the passive optical network (PON) technologies--is adopted by many ISPs to provide Fiber Internet for home (FTTH). Since GPON is popular PON technology, it is important to ensure traffic confidentiality. 
-
-GPON supports AES-based downstream traffic encryption on  GPON Encapsulation Method (GEM) Layer. However, some fields of GEM Header remain plaintext such as the Payload Length Indicator (PLI) field used for multiplexing and the Port-ID field used for mapping subscribers' Optical Network Terminals/Units(ONTs/ONUs).
+ GPON supports AES-based downstream traffic encryption on  GPON Encapsulation Method (GEM) Layer. However, some fields of GEM Header remain plaintext such as the Payload Length Indicator (PLI) field used for multiplexing and the Port-ID field used for mapping subscribers' Optical Network Terminals/Units(ONTs/ONUs).
 
 Such plaintext fields may appear innocuous. However, recent studies have demonstrated that such metadata can be exploited to infer victim's activity (e.g., identifying a victim's web-based video streaming watching activity) ~\cite{bae-sec22}~\cite{ytyt}~\cite{ytyt2}.
 
@@ -459,6 +458,8 @@ First, we played each of 10 videos (three runs each) on Ubuntu 24.04 under a fix
 These traces approximate the payload length observations available to a real same-splitter adversary and enable systematic evaluation of PLI based inference.
 
 After producing the dataset, we visualized cumulative PLI--Time Plot based on our dataset(Publicly Available on our github repository)~\cite{github}. We observed a clear correlation between each video and its cumulative PLI over time graph; traces from the same video show highly consistent slopes across runs.
+We use run1–2 as a reference database and treat run3 as a query trace (run3-only inter comparison).
+
 \FloatBarrier 
 
 \begin{figure}[H]
@@ -485,19 +486,18 @@ After producing the dataset, we visualized cumulative PLI--Time Plot based on ou
     \vspace{-0.5em}
     {\small (b) DTW distance (lower = more similar)}
   \end{minipage}
-  \caption{Intra-video vs. inter-video similarity using normalized cumulative PLI traces. Same-video pairs produce smaller distances than different-video pairs, supporting reliable video matching from plaintext PLI sequences.}
+  \caption{Same video Pair(intra) - Different video pair(inter) similarity yielded from cumulative PLI traces. Same video pairs have smaller distances than different video pairs. We found a partial intersection due to ABR variability and buffering, but the distinction is sufficient for discrimination}
   \label{fig:pli-metrics}
-\end{figure}
-We further quantify the similarity between traces using distance-based metrics on the normalized cumulative PLI time series. Same-video pairs yield smaller distances than different-video pairs (median RMSE: 0.040 vs. 0.088; median DTW: 0.031 vs. 0.061).
+\end{figure} We further quantify the similarity between traces using distance-based metrics on the normalized cumulative PLI time series. Same-video pairs yield smaller distances than different-video pairs Same-video pairs yield smaller distances than different-video pairs (median RMSE: 0.040 vs. 0.088, AUC=0.813; median DTW: 0.031 vs. 0.061, AUC=0.776).
 
 \section{Conclusion And Discussion}
 Despite GEM Payload Encryption, GPON Network is still vulnerable to inferring streaming activity because PLI in GEM headers can be exploited to infer a victim’s video activity(e.g., Youtube). 
-Future work includes validating our observations on a real GPON testbed. 
+Potential mitigations include traffic shaping and obfuscating GEM metadata.
 All code and experimental dataset is publicly available on our github repository.~\cite{github}
-\textbf{Mitigations} Potential mitigations include padding/obfuscating payload lengths, traffic shaping.
-\textbf{Future Work In Real World.} Future Work will be conducted in experimental testbed with Real OLT, ONU and Optical Splitter. We will use FPGA to collect GEM frames.
-\textbf{Extent to XGS-PON Networks.} We believe that XGS-PON Networks are subject to analogous privacy risks.
 
+\textbf{Future Work} Future Work will be conducted in testbed with Real OLT, ONU and Optical Splitter. We will use FPGA device to capture GEM frames to parse downstream frames. We will expand to more videos and longer captures(while changing various resolution, bitrate); report top-1 identification accuracy and confusion matrices (not only pairwise AUC).
+
+\textbf{Extent to XGS-PON Networks.} We assume that XGS-PON are subject to analogous privacy risks because XGEM Frame that XGS-PON uses has Payload Length Indicator Field like GEM.
 
 % (Conclusion and acknowledgments intentionally omitted to satisfy the 2-page poster limit.)
 
