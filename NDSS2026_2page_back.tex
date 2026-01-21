@@ -317,7 +317,6 @@
 \hyphenation{op-tical net-works semi-conduc-tor}
 
 
-
 \begin{document}
 %
 % paper title
@@ -378,6 +377,7 @@
 
 
 
+
 % make the title area
 \maketitle
 
@@ -422,9 +422,10 @@ Using these PLI traces, we present preliminary evidence that YouTube streaming t
   \centering
   % Use PDF for LaTeX (recommended). If you prefer PNG, replace with .png.
   \includegraphics[width=\linewidth]{fig/gpon_encapsulation_diagram_tikz.pdf}
-  \caption{Encapsulation pipeline in GPON downstream: upper-layer packets (e.g., Ethernet/IP) are encapsulated into GEM frames, packed into GTC frames, and broadcast over the shared optical line.}
+  \caption{Encapsulation pipeline in GPON downstream: upper-layer packets (e.g., Ethernet/IP) are encapsulated into GEM frames, packed into GTC frames, and broadcast over the shared optical line. While GEM payloads are AES encrypted (e.g., AES-128), GEM header fields such as Port-ID and PLI remain plaintext.}
   \label{fig:gpon-encapsulation}
 \end{figure}
+
 \textbf{GPON Topology and GTC Framing} GPON Networks consist of an Optical Line Terminal (OLT) at the ISP and multiple Optical Network Terminals/Units(ONTs/ONUs) (typically called "modem") deployed at subscribers. A single optical tree can serve up to 32 subscribers (e.g., 1:32 split). In the downstream, the OLT transmits downstream traffic through the splitter. Since the splitter passively distributes the optical signal from the OLT to all ONUs/ONTs on the same splitter, each ONU/ONT can physically receive the downstream transmissions destined for other ONUs/ONTs. At the transmission layer, downstream bytes are carried in GPON Transmission Convergence (GTC) frames sent periodically(per-125~$\mu$s), whose payload area carries multiple GEM frames(described next)~\cite{cisco-gpon,itu-g9843}.
 
 \textbf{GEM Framing} Upper layer traffic (e.g., Ethernet frames carrying TCP/IP packets) are carried in the GEM Payload Field transmitted via GPON Encapsulation Method (GEM) Frames. Downstream GEM payloads are often AES encrypted for confidentiality (depending on ISP configuration~\cite{itu-g9843}). However, the GEM Port-ID (used to demultiplex services/flows) and the Payload Length Indicator (PLI), which encodes the payload size, are transmitted in plaintext. Thus, an attacker can extract a victim’s encrypted payload lengths from consecutive PLI values (optionally grouped by Port-ID), even without decrypting the payload contents.
@@ -443,12 +444,13 @@ We consider an attacker on the same optical splitter as a victim. And we assume 
 \end{itemize}
 %\section{Trace Generation (125~$\mu$s)}
 %To avoid relying on proprietary GPON capture hardware, we build a GPON downstream trace generator. From a PCAP of encrypted video traffic, we (i) map Ethernet frames into GEM payloads (fragmenting to satisfy the 12-bit PLI limit), (ii) generate plaintext GEM headers (PLI/Port-ID/PTI/HEC), (iii) encrypt payload bytes with AES-CTR (header remains plaintext), and (iv) pack the GEM stream into fixed-length 125~$\mu$s downstream frames consistent with the configured line rate. The attacker signal is then either the GEM-level PLI sequence or the per-frame occupancy series.
-\begin{figure}[H]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=\linewidth]{fig/attacker_pipeline_diagram_tikz.pdf}
   \caption{Attacker-side observation pipeline: passive optical capture under the same splitter enables reception of downstream GTC frames, extraction of GEM frames, and construction of a PLI-based dataset (\texttt{gems.csv}).}
   \label{fig:attacker-pipeline}
 \end{figure}
+
 \section{Experiment and Preliminary Results}
 To demonstrate the threat model in our experimental environment, we developed a software GPON downstream simulator that reproduces the process of receiving GTC frames, extracting GEM frames, and exporting plaintext GEM header fields into the dataset. 
 
@@ -456,15 +458,15 @@ First, we played each of 10 videos (three runs each) on Ubuntu 24.04 under a fix
 These traces approximate the payload length observations available to a real same-splitter adversary and enable systematic evaluation of PLI based inference.
 
 After producing the dataset, we visualized cumulative PLI--Time Plot based on our dataset(Publicly Available on our github repository)~\cite{github}. We observed a clear correlation between each video and its cumulative PLI over time graph; traces from the same video show highly consistent slopes across runs.
-We use run1-2 as a reference database and treat run3 as a query trace (run3-only inter comparison).
+We use run1–2 as a reference database and treat run3 as a query trace (run3-only inter comparison).
 
 \FloatBarrier 
 
-\begin{figure}[t]
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.42\linewidth]{fig/cumsum_vid001.pdf}
   \vspace{-0.6em}
-  \caption{Cumulative PLI vs. time for one video (vid001) across three runs (720p). The three traces show closely matching slopes; additional plots are available in our repository~\cite{github}.}
+  \caption{PLI - Time graph for one of 10 videos showing that highly identical slopes between three runs. PLI - Time Graph of others is publicly available on our github repository~\cite{github}.}
   \label{fig:cumsum}
 \end{figure}
 
@@ -484,10 +486,9 @@ We use run1-2 as a reference database and treat run3 as a query trace (run3-only
     \vspace{-0.5em}
     {\small (b) DTW distance (lower = more similar)}
   \end{minipage}
-  \caption{Distance distributions for same-video pairs (intra-video) and different video pairs (inter-video) yielded from cumulative PLI traces. Same video pairs have smaller distances than different video pairs. We found a partial intersection due to ABR variability and buffering, but the distinction is sufficient for discrimination}
+  \caption{Same video Pair(intra) - Different video pair(inter) similarity yielded from cumulative PLI traces. Same video pairs have smaller distances than different video pairs. We found a partial intersection due to ABR variability and buffering, but the distinction is sufficient for discrimination}
   \label{fig:pli-metrics}
-\end{figure} 
-We further quantify the similarity between traces using distance-based metrics on the normalized cumulative PLI time series. Same-video pairs yield smaller distances than different-video pairs Same-video pairs yield smaller distances than different-video pairs (median RMSE: 0.040 vs. 0.088, AUC=0.813; median DTW: 0.031 vs. 0.061, AUC=0.776).
+\end{figure} We further quantify the similarity between traces using distance-based metrics on the normalized cumulative PLI time series. Same-video pairs yield smaller distances than different-video pairs Same-video pairs yield smaller distances than different-video pairs (median RMSE: 0.040 vs. 0.088, AUC=0.813; median DTW: 0.031 vs. 0.061, AUC=0.776).
 
 \section{Conclusion And Discussion}
 Despite GEM Payload Encryption, GPON Network is still vulnerable to inferring streaming activity because PLI in GEM headers can be exploited to infer a victim’s video activity(e.g., Youtube). 
@@ -496,8 +497,7 @@ All code and experimental dataset is publicly available on our github repository
 
 \textbf{Future Work} Future Work will be conducted in testbed with Real OLT, ONU and Optical Splitter. We will use FPGA device to capture GEM frames to parse downstream frames. We will expand to more videos and longer captures(while changing various resolution, bitrate); report top-1 identification accuracy and confusion matrices (not only pairwise AUC).
 
-\textbf{Extent to XGS-PON Networks.}  We assume that XGS PON are subject to analogous privacy risks because XGEM Frame that XGS-PON uses has Payload Length Indicator Field like GEM.
-%\textbf{Extent to XGS-PON Networks.} We assume that XGS-PON are subject to analogous privacy risks because XGEM Frame that XGS-PON uses has Payload Length Indicator Field like GEM. however, whether the same side channel persists depends on which XGEM header fields remain plaintext and how OLT scheduling differs. We will validate this by repeating our capture-and-matching evaluation on an XGS-PON testbed.
+\textbf{Extent to XGS-PON Networks.} We assume that XGS-PON are subject to analogous privacy risks because XGEM Frame that XGS-PON uses has Payload Length Indicator Field like GEM.
 
 % (Conclusion and acknowledgments intentionally omitted to satisfy the 2-page poster limit.)
 
@@ -541,17 +541,17 @@ Cisco, ``Understand GPON Technology,'' Troubleshooting TechNotes. (Document ID: 
 Github Repository - \url{https://github.com/hjaka08/GPON}
 
 \bibitem{bae-sec22}
-S.~Bae, et al.,
+S.~Bae, M.~Son, D.~Kim, C.~J.~Park, J.~Lee, S.~Son, and Y.~Kim,
 ``Watching the Watchers: Practical Video Identification Attack in LTE Networks,''
 in \emph{31st USENIX Security Symposium (USENIX Security '22)}, 2022. 
 
 \bibitem{ytyt}
-X.~Zhang, et al.,
+X.~Zhang, G.~Xiong, Z.~Li, C.~Yang, X.~Lin, G.~Gou, and B.~Fang,
 ``Traffic spills the beans: A robust video identification attack against YouTube,''
 \emph{Computers \& Security}, vol.~137, 2024, Art. 103623. 
 
 \bibitem{ytyt2}
-N.~Hu et al.,
+N.~Hu, H.~Wu, H.~Zhao, S.~Ni, and G.~Cheng,
 ``Breaking Through the Diversity: Encrypted Video Identification Attack Based on QUIC Features,''
 in \emph{ESORICS 2024}, 2024. 
 
