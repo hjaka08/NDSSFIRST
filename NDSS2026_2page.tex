@@ -385,7 +385,7 @@
 % As a general rule, do not put math, special symbols or citations
 % in the abstract
 \begin{abstract}
-Gigabit Passive Optical Networks (GPON), an ITU-T standardized technology widely adopted in fiber-to-the-home (FTTH) networks, supports downstream payload encryption to protect subscribers' traffic. Unfortunately, encryption does not cover all access-layer metadata. This poster presents a preliminary analysis showing that the Payload Length Indicator (PLI), which remains in plaintext in GEM headers, forms a side channel that enables inference of streaming activity. Using a GPON downstream simulator and controlled runs of youtube streaming, our preliminary results show that PLI traces are highly consistent across repeated runs of the same video and suggest that a passive attacker on the same optical splitter as the victim could potentially infer a victim's streaming activity (e.g., Youtube Video Identification). 
+Gigabit Passive Optical Networks (GPON), an ITU-T standardized technology adopted in FTTH networks, supports downstream payload encryption to protect subscribers' traffic. Unfortunately, encryption does not cover all access-layer metadata. This poster presents a preliminary analysis showing that the Payload Length Indicator (PLI), which remains in plaintext in GEM headers, forms a side channel that enables inference of streaming activity. Using a GPON downstream simulator, We demonstrate that PLI traces are highly consistent across repeated runs of the same video and suggest that a passive attacker on the same optical splitter as the victim could potentially infer a victim's streaming activity (e.g., Youtube Video Identification). 
 \end{abstract}
 
 
@@ -408,14 +408,14 @@ Gigabit Passive Optical Networks (GPON), an ITU-T standardized technology widely
 % --- NDSS Type 1 Poster Abstract (WIP) ---
 
 \section{Introduction And Motivation}
-As fiber internet access has become dominant in Network Infrastructures, GPON--one of the passive optical network (PON) technologies--is adopted by many ISPs to provide fiber-to-the-home (FTTH). Since GPON is popular PON technology, it is important to ensure traffic confidentiality. 
- GPON supports AES-based downstream traffic encryption on  GPON Encapsulation Method (GEM) Layer. However, some fields of GEM Header remain plaintext such as the Payload Length Indicator (PLI) field used for multiplexing and the Port-ID field used for mapping subscribers' Optical Network Terminals/Units(ONTs/ONUs).
+As fiber internet access has become dominant in network infrastructures, GPON--one of the passive optical network (PON) technologies--is adopted by many ISPs to provide fiber-to-the-home (FTTH) internet. Since GPON is a popular PON technology, it is important to ensure traffic confidentiality. 
+ GPON supports AES-based downstream payload encryption at the GPON Encapsulation Method (GEM) layer. However, some fields in the GEM header remain plaintext such as the Payload Length Indicator (PLI) field used for multiplexing and the Port-ID field used for mapping subscribers' Optical Network Terminals/Units(ONTs/ONUs).
 
-Such plaintext fields may appear innocuous. However, recent studies have demonstrated that such metadata can be exploited to infer victim's activity (e.g., identifying a victim's web-based video streaming watching activity) ~\cite{bae-sec22}~\cite{ytyt}~\cite{ytyt2}.
+Such plaintext fields may appear innocuous. However, recent studies have demonstrated that such metadata can be exploited to infer a victim's activity (e.g., identifying a victim's web-based video streaming watching activity) ~\cite{bae-sec22}~\cite{ytyt}~\cite{ytyt2}.
 
-While prior studies primarily focused on upper-layer or cellular traffic analysis~\cite{bae-sec22,ytyt}, We researched whether the plaintext PLI field in GPON GEM headers can be used to leak victim's privacy on the same optical splitter.
-We conduct a preliminary experimental analysis using a software-based GPON downstream simulator to evaluate whether the plaintext PLI field could contribute to privacy leakage.
-Using these PLI traces, we present preliminary evidence that YouTube streaming traces are highly consistent across repeated runs and may be distinguishable in controlled settings.
+While prior studies primarily focused on upper-layer or cellular traffic analysis~\cite{bae-sec22}~\cite{ytyt}, the feasibility of exploiting link-layer metadata in a shared optical medium remains under-explored.
+
+In this poster, we investigate whether the plaintext PLI field in GEM headers can be leveraged to fingerprint a victim's streaming activity on a shared optical splitter. We developed a software-based GPON downstream simulator to analyze the statistical properties of PLI traces. Our experimental results provide evidence that YouTube streaming traces exhibit high temporal consistency and distinctiveness at the GEM layer, suggesting that even link-layer metadata can pose a significant threat to user privacy in GPON environments.
 
 \section{Background}  
 
@@ -449,14 +449,14 @@ the attacker does not need to register their device with OLT; so even if they us
   \caption{Attacker-side observation pipeline: passive optical capture under the same splitter enables reception of downstream GTC frames, extraction of GEM frames, and construction of a PLI-based dataset (\texttt{gems.csv}).}
   \label{fig:attacker-pipeline}
 \end{figure}
-\section{Trace Generation (125)}
-To demonstrate the threat model in our experimental environment, We developed software based GPON downstream trace generator. From a PCAP of encrypted video traffic, we (i) map Ethernet frames into GEM payloads (fragmenting to satisfy the 12-bit PLI limit), (ii) generate plaintext GEM headers (PLI/Port-ID/PTI/HEC), (iii) encrypt payload bytes with AES-CTR (header remains plaintext), and (iv) pack the GEM stream into fixed-length 125 downstream frames consistent with the configured line rate. The attacker signal is then either the GEM-level PLI sequence or the per-frame occupancy series. Large Ethernet packets may generate multiple consecutive GEM fragments; the PLI values in our traces therefore reflect per-fragment payload lengths (the attacker-visible observable).
+\section{Trace Generation (125$\mu$s)}
+To demonstrate the threat model in our experimental environment, we developed a PCAP-driven, software-based GPON downstream trace generator~\cite{github} that follows key ITU-T G.984.3 TC-layer parameters relevant to PLI (125~$\mu$s framing and GEM header formatting). From a PCAP of encrypted video traffic, we (i) map Ethernet frames into GEM payloads (fragmenting to satisfy the 12-bit PLI limit), (ii) generate plaintext GEM headers (PLI/Port-ID/PTI/HEC), (iii) encrypt payload bytes with AES-CTR (headers remain plaintext), and (iv) pack the GEM stream into fixed-length 125~$\mu$s downstream frames consistent with the configured line rate. The attacker signal is either the GEM-level PLI sequence or the per-frame occupancy series. Large Ethernet packets may generate multiple consecutive GEM fragments; thus, PLI values in our traces reflect per-fragment payload lengths (the attacker-visible observable).
 \section{Experiment and Preliminary Results}
-First, we played each of 10 videos (three runs each) on Ubuntu 24.04 under a fixed playback quality and resolution setting(720p). To minimize interference, we restricted other background traffic (e.g., VNC, SSH) while playing video. For each run, we captured packet data (PCAP) for 180 seconds. Then, we replayed each PCAP file in our simulator to record the resulting PLI values and timestamps as CSV traces. We preserve original PCAP packet timestamps to retain idle periods and burstiness; each synthesized GEM is assigned t\_start\_us derived from the PCAP time base (µs resolution). For analyses that require alignment, we additionally aggregate GEMs into 125-µs bins matching the GPON downstream frame period.
+First, we played each of 10 videos (three runs each) on Ubuntu 24.04 under a fixed playback quality and resolution setting (720p). To minimize interference, we restricted other background traffic (e.g., VNC, SSH) during playback. For each run, we captured packet data (PCAP) for 180 seconds. Then, we replayed each PCAP file in our simulator to record the resulting PLI values and timestamps as CSV traces. We preserve original PCAP packet timestamps to retain idle periods and burstiness; each synthesized GEM is assigned t\_start\_us derived from the PCAP time base (µs resolution). For analyses that require alignment, we additionally aggregate GEMs into 125-µs bins matching the GPON downstream frame period.
 These traces approximate the payload length observations available to a real same-splitter adversary and enable systematic evaluation of PLI based inference.
 
-After producing the dataset, we visualized cumulative PLI--Time Plot based on our dataset(Publicly Available on our github repository)~\cite{github}. We observed a clear correlation between each video and its cumulative PLI over time graph; traces from the same video show highly consistent slopes across runs.
-We use run1-2 as a reference database and treat run3 as a query trace (run3-only inter comparison).
+After producing the dataset, we visualized cumulative PLI--Time Plot based on our dataset(Publicly Available on our Github repository)~\cite{github}. We observed a clear correlation between each video and its cumulative PLI over time graph; traces from the same video show highly consistent slopes across runs.
+We use run1,2 as a database and treat run3 as a query trace.
 
 \FloatBarrier 
 
@@ -491,16 +491,16 @@ We use run1-2 as a reference database and treat run3 as a query trace (run3-only
 
   \label{fig:pli-metrics}
 \end{figure} 
-We further quantify the similarity between traces using distance-based metrics on the normalized cumulative PLI time series. Same-video pairs yield smaller distances than different-video pairs Same-video pairs yield smaller distances than different-video pairs (median RMSE: 0.040 vs. 0.088, AUC=0.813; median DTW: 0.031 vs. 0.061, AUC=0.776).
+We further quantify similarity using distance-based metrics on the normalized cumulative PLI time series: same-video pairs yield smaller distances than different-video pairs (median RMSE: 0.040 vs 0.088, AUC=0.813; median DTW: 0.031 vs 0.061, AUC=0.776).
 
 \section{Conclusion And Discussion}
-Despite GEM Payload Encryption, GPON Network is still vulnerable to inferring streaming activity because PLI in GEM headers can be exploited to infer a victim’s video activity(e.g., Youtube). 
+Despite GEM Payload Encryption, GPON is still vulnerable to inferring streaming activity because PLI values in GEM headers can be exploited to infer a victim’s video activity (e.g., Youtube). 
 Potential mitigations include traffic shaping and obfuscating GEM metadata.
-All code and experimental dataset is publicly available on our github repository.~\cite{github}
 
-\textbf{Future Work} Future Work will be conducted in testbed with Real OLT, ONU and Optical Splitter. We will use FPGA device to capture GEM frames to parse downstream frames. We will expand to more videos and longer captures(while changing various resolution, bitrate); report top-1 identification accuracy and confusion matrices (not only pairwise AUC).
+\textbf{Future Work} Future Work will be conducted in testbed with Real OLT, ONU and Optical Splitter. We will use FPGA device to capture GEM frames to parse downstream frames. We will expand to more videos and longer captures with changing various resolution, bitrate.
 
 \textbf{Extent to XGS-PON Networks.} We assume that XGS-PON are subject to analogous privacy risks because XGEM Frame that XGS-PON uses has Payload Length Indicator Field like GEM. however, whether the same side channel persists depends on which XGEM header fields remain plaintext and how OLT scheduling differs. We will validate this by repeating our capture-and-matching evaluation on an XGS-PON testbed.
+
 
 % (Conclusion and acknowledgments intentionally omitted to satisfy the 2-page poster limit.)
 
@@ -541,7 +541,7 @@ ITU-T Recommendation G.984.3, \emph{Gigabit-capable passive optical networks (GP
 Cisco, ``Understand GPON Technology,'' Troubleshooting TechNotes. (Document ID: 216230)
 
 \bibitem{github}
-Github Repository - \url{https://github.com/hjaka08/GPON}
+Our Github Repository - \url{https://github.com/hjaka08/GPON}
 
 \bibitem{bae-sec22}
 S.~Bae, et al.,
