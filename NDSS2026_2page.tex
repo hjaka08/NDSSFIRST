@@ -510,18 +510,43 @@ We use run1,2 as a database and treat run3 as a query trace.
 
   \label{fig:pli-metrics}
 \end{figure} 
+\vspace{-1.5em}
+\begin{table}[H]
+  \centering
+  \tiny
+  \setlength{\tabcolsep}{1pt}
+  \renewcommand{\arraystretch}{0.3}
+  \caption{Per-query Top-1 predictions (vote\_pr).}
+  \label{tab:top1-detail}
+  \begin{tabular}{l l c c c}
+    \hline
+    \textbf{True} & \textbf{Pred} & \textbf{CORRECT} & \textbf{margin} & \textbf{$r$/RMSE} \\
+    \hline
+    vid001/r3 & vid001/r1 & Y & 2 & 0.998/0.025 \\
+    vid002/r3 & vid002/r1 & Y & 5 & 0.995/0.041 \\
+    vid003/r3 & vid003/r2 & Y & 1 & 0.980/0.050 \\
+    vid004/r3 & vid004/r1 & Y & 2 & 0.996/0.037 \\
+    vid005/r3 & vid005/r2 & Y & 2 & 0.998/0.020 \\
+    vid006/r3 & vid008/r1 & N & 2 & 0.994/0.048 \\
+    vid007/r3 & vid007/r1 & Y & 2 & 0.999/0.025 \\
+    vid008/r3 & vid008/r1 & Y & 2 & 0.999/0.018 \\
+    vid009/r3 & vid009/r2 & Y & 2 & 0.990/0.041 \\
+    vid010/r3 & vid010/r1 & Y & 3 & 0.998/0.020 \\
+    \hline
+  \end{tabular}
+\end{table}
+\vspace{-0.9em}
 We further quantify similarity on the normalized cumulative PLI time series: same-video pairs exhibit higher Pearson correlation (median $r=0.991$ vs $0.970$, AUC=0.779) and lower RMSE (median 0.048 vs 0.098, AUC=0.826).
 Using nearest-neighbor matching with rank-vote fusion of Pearson and RMSE (vote\_pr), we achieve 90\% Top-1 identification accuracy (9/10) when matching run3 queries against run1--run2 gallery traces.
-We compute similarity on cumulative-sum PLI series, normalized by the final value (bin=100ms) to reduce scale effects.
 %We further quantify similarity using distance-based metrics on the normalized cumulative PLI time series: same-video pairs yield smaller distances than different-video pairs (median RMSE: 0.040 vs 0.088, AUC=0.813; median DTW: 0.031 vs 0.061, AUC=0.776).
 
 \section{Conclusion And Discussion}
 Despite GEM Payload Encryption, GPON is still vulnerable to inferring streaming activity because PLI values in GEM headers can be exploited to infer a victim’s video activity (e.g., Youtube). 
 Potential mitigations include traffic shaping and obfuscating GEM metadata.
 
-\textbf{Future Work} Future Work will be conducted in testbed with Real OLT, ONU and Optical Splitter. We will use FPGA device to capture GEM frames to parse downstream frames. We will expand to more videos and longer captures with changing various resolution, bitrate.
+Future Work will be conducted in testbed with Real OLT, ONU and Optical Splitter. We will use FPGA device to capture GEM frames to parse downstream frames. We will expand to more videos and longer captures with changing various resolution, bitrate.
 
-\textbf{Extent to XGS-PON Networks.} We assume that XGS-PON are subject to analogous privacy risks because XGEM Frame that XGS-PON uses has Payload Length Indicator Field like GEM. however, whether the same side channel persists depends on which XGEM header fields remain plaintext and how OLT scheduling differs. We will validate this by repeating our capture-and-matching evaluation on an XGS-PON testbed.
+\textbf{Extent to XGS-PON Networks.} We assume that XGS-PON has same issue; XGEM Frame that XGS-PON uses has Payload Length Indicator Field like GEM. We will validate this by repeating our capture-and-matching evaluation on an XGS-PON testbed.
 
 
 % (Conclusion and acknowledgments intentionally omitted to satisfy the 2-page poster limit.)
