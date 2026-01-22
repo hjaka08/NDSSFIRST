@@ -385,7 +385,7 @@
 % As a general rule, do not put math, special symbols or citations
 % in the abstract
 \begin{abstract}
-Gigabit Passive Optical Networks (GPON), an ITU-T standardized technology adopted in FTTH networks, supports downstream payload encryption to protect subscribers' traffic. Unfortunately, encryption does not cover all access-layer metadata. This poster presents a preliminary analysis showing that the Payload Length Indicator (PLI), which remains in plaintext in GEM headers, forms a side channel that enables inference of streaming activity. Using a GPON downstream simulator, We demonstrate that PLI traces are highly consistent across repeated runs of the same video and suggest that a passive attacker on the same optical splitter as the victim could potentially infer a victim's streaming activity (e.g., Youtube Video Identification). 
+Gigabit Passive Optical Networks (GPON), an ITU-T standardized technology adopted in FTTH networks, supports downstream payload encryption to protect subscribers' traffic. Unfortunately, encryption does not cover all access-layer metadata. This poster presents a preliminary analysis demonstrating that the Payload Length Indicator (PLI), which remains in plaintext in GEM headers, can be exploited as a side channel to infer streaming activity. Using a GPON downstream simulator, We demonstrate that PLI traces are highly consistent across repeated runs of the same video and suggest that a passive attacker on the same optical splitter as the victim could potentially infer a victim's streaming activity (e.g., Youtube Video Identification). 
 \end{abstract}
 
 
@@ -413,9 +413,9 @@ As fiber internet has become dominant in network infrastructures, GPON--one of t
 
 Such plaintext fields may appear innocuous. However, recent studies have demonstrated that such metadata can be exploited to infer a victim's activity (e.g., identifying a victim's web-based video streaming watching activity) ~\cite{bae-sec22}~\cite{ytyt}~\cite{ytyt2}.
 
-While prior studies primarily focused on upper-layer or cellular traffic analysis~\cite{bae-sec22}~\cite{ytyt}, the feasibility of exploiting link-layer metadata in a shared optical medium remains under-explored.
+While prior studies primarily focused on upper-layer or cellular traffic analysis~\cite{bae-sec22}~\cite{ytyt}, we researched whether the PLI field in GEM headers can be exploited to fingerprint a victim's streaming activity.
 
-In this poster, we research whether the plaintext PLI field in GEM headers can be exploited to fingerprint a victim's streaming activity on a shared optical splitter. We developed a software-based GPON downstream simulator to analyze the statistical properties of PLI traces. Our preliminary results present evidence that YouTube streaming traces exhibit high temporal consistency and distinctiveness at the GEM layer, suggesting that even link-layer metadata can pose a significant threat to user privacy in GPON environments.
+In this poster, We developed a software-based GPON downstream simulator to analyze the statistical properties of PLI traces. Our preliminary results indicate that Youtube streaming traces are highly consistent over time and distinctive at the GEM layer, suggesting that value of the PLI field can be exploited to infer victim's video streaming.
 
 \section{Background}  
 
@@ -446,7 +446,7 @@ Therefore, even when payload bytes are encrypted, an attacker can observe the pl
 \textbf{Video Identification.} HTTP Adaptive Streaming (HAS) is the popular video streaming model -- which is generally adopted by video streaming platforms (e.g., Youtube) --delivers video by letting the client periodically request short media segments at a bitrate chosen by an adaptive bitrate (ABR) algorithm. This request--response process forms characteristic bursty download patterns and bitrate-dependent segment sizes, which can be exploited for traffic inference.~\cite{bae-sec22}
 
 \section{Threat Model}
-We consider an attacker on the same optical splitter as a victim. And we assume an attacker can obtain the victim’s Port-ID.
+We consider an attacker who is on the same optical splitter as the victim and has the capability to obtain the victim’s Port-ID, which is crucial for targeting specific GEM frames.
 \begin{itemize}
   \item \textbf{1. Premise} The attacker has an optical capture device (e.g., FPGA with optical TAP, modified ONU that can receive raw GTC frames) connected to splitter and passively records downstream from OLT.
 the attacker does not need to register their device with OLT; so even if they use receive-only optical tap, they can entirely record downstream records without transmitting.
@@ -516,27 +516,27 @@ We use run1,2 as a database and treat run3 as a query trace.
   \tiny
   \setlength{\tabcolsep}{1pt}
   \renewcommand{\arraystretch}{0.3}
-  \caption{Per-query Top-1 predictions (vote\_pr).}
+  \caption{Per-query Top-1 predictions.~\cite{github}}
   \label{tab:top1-detail}
   \begin{tabular}{l l c c c}
     \hline
-    \textbf{True} & \textbf{Pred} & \textbf{CORRECT} & \textbf{margin} & \textbf{$r$/RMSE} \\
+    \textbf{Query} & \textbf{Prediction} & \textbf{CORRECT} & \textbf{margin} & \textbf{$r$/RMSE} \\
     \hline
-    vid001/r3 & vid001/r1 & Y & 2 & 0.998/0.025 \\
-    vid002/r3 & vid002/r1 & Y & 5 & 0.995/0.041 \\
-    vid003/r3 & vid003/r2 & Y & 1 & 0.980/0.050 \\
-    vid004/r3 & vid004/r1 & Y & 2 & 0.996/0.037 \\
-    vid005/r3 & vid005/r2 & Y & 2 & 0.998/0.020 \\
-    vid006/r3 & vid008/r1 & N & 2 & 0.994/0.048 \\
-    vid007/r3 & vid007/r1 & Y & 2 & 0.999/0.025 \\
-    vid008/r3 & vid008/r1 & Y & 2 & 0.999/0.018 \\
-    vid009/r3 & vid009/r2 & Y & 2 & 0.990/0.041 \\
-    vid010/r3 & vid010/r1 & Y & 3 & 0.998/0.020 \\
+    vid001/r3 & vid001/r1 & T & 2 & 0.998/0.025 \\
+    vid002/r3 & vid002/r1 & T & 5 & 0.995/0.041 \\
+    vid003/r3 & vid003/r2 & T & 1 & 0.980/0.050 \\
+    vid004/r3 & vid004/r1 & T & 2 & 0.996/0.037 \\
+    vid005/r3 & vid005/r2 & T & 2 & 0.998/0.020 \\
+    vid006/r3 & vid008/r1 & F & 2 & 0.994/0.048 \\
+    vid007/r3 & vid007/r1 & T & 2 & 0.999/0.025 \\
+    vid008/r3 & vid008/r1 & T & 2 & 0.999/0.018 \\
+    vid009/r3 & vid009/r2 & T & 2 & 0.990/0.041 \\
+    vid010/r3 & vid010/r1 & T & 3 & 0.998/0.020 \\
     \hline
   \end{tabular}
 \end{table}
 \vspace{-0.9em}
-We further quantify similarity on the normalized cumulative PLI time series: same-video pairs exhibit higher Pearson correlation (median $r=0.991$ vs $0.970$, AUC=0.779) and lower RMSE (median 0.048 vs 0.098, AUC=0.826).
+We further quantify similarity on the normalized cumulative PLI time series: same video pairs exhibit higher Pearson correlation (median $r=0.991$ vs $0.970$, AUC=0.779) and lower RMSE (median 0.048 vs 0.098, AUC=0.826).
 Using nearest-neighbor matching with rank-vote fusion of Pearson and RMSE (vote\_pr), we achieve 90\% Top-1 identification accuracy (9/10) when matching run3 queries against run1--run2 gallery traces.
 %We further quantify similarity using distance-based metrics on the normalized cumulative PLI time series: same-video pairs yield smaller distances than different-video pairs (median RMSE: 0.040 vs 0.088, AUC=0.813; median DTW: 0.031 vs 0.061, AUC=0.776).
 
