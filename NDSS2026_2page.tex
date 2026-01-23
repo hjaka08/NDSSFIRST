@@ -434,14 +434,14 @@ In GPON, the Optical Line Terminal (OLT) broadcasts downstream traffic over a pa
 ~\cite{itu-g9843} % Fig. 8-1 / 8-2
 
 \textbf{GEM and plaintext metadata.}
-Upper layer traffic (e.g., Ethernet frame) is carried in the Payload Field in GEM frames. A GEM frame starts with a 5 byte GEM header containing a 12 bit PLI, a 12 bit Port-ID, a 3 bit Payload Type Indicator (PTI), and a header error control (HEC) field. PTI indicates whether the payload is the end of a fragmented payload or not.%
+Upper layer traffic (e.g., Ethernet frame) is carried in the Payload Field in GEM frames. A GEM frame starts with a 5 byte GEM header containing a 12 bit PLI, a 12 bit Port-ID, a 3 bit Payload Type Indicator (PTI), and a header error control (HEC) field. PTI indicates whether the payload is the end of a fragmented payload or not. %
 ~\cite{itu-g9843} % Fig. 8-11 + PLI/PTI text
 
-\textbf{PLI  plaintext length even under encryption.}
+\textbf{PLI length even under encryption.}
 In GPON, downstream user traffic is carried as GEM frames multiplexed in the GTC payload~\cite{itu-g9843}.
-Each GEM header includes a 12 bit payload length indicator (PLI) that specifies the payload length $L$ in bytes (up to 4095 bytes). In certain cases, larger payload values are fragmented accordingly~\cite{itu-g9843}(where PTI is used to indicate whether a GEM payload is a end of a fragment or not).
-Downstream GEM payloads are often encrypted using AES in CTR mode (XOR-based encryption).
-Therefore, even when payload bytes are encrypted, an attacker can observe the plaintext payload length per fragment via value of PLI.
+Each GEM header includes a plantext PLI field that specifies the payload length $L$ in bytes (up to 4095 bytes). In certain cases, larger payload values are fragmented accordingly~\cite{itu-g9843}(where PTI is used to indicate whether a GEM payload is a end of a fragment or not).
+Downstream GEM encryption only encrypts only payload field(not GEM header) using AES-CTR.
+Since AES-CTR Encrypytion is length-preserving. even when payload bytes are encrypted, an attacker can observe the plaintext payload length.
 
 \textbf{Video Identification.} HTTP Adaptive Streaming (HAS) is the popular video streaming model -- which is generally adopted by video streaming platforms (e.g., Youtube) --delivers video by letting the client periodically request short media segments at a bitrate chosen by an adaptive bitrate (ABR) algorithm. This request--response process forms characteristic bursty download patterns and bitrate-dependent segment sizes, which can be exploited for traffic inference.~\cite{bae-sec22}
 
