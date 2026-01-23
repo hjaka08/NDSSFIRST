@@ -411,7 +411,7 @@ Gigabit Passive Optical Networks (GPON), an ITU-T standardized technology adopte
 As fiber internet has become dominant in network infrastructures, GPON--one of the passive optical network (PON) technologies--is adopted by many ISPs to provide fiber-to-the-home (FTTH) internet. Since GPON is a popular PON technology, it is important to ensure traffic confidentiality. 
  GPON supports AES-based downstream payload encryption at the GPON Encapsulation Method (GEM) layer. However, some fields in the GEM header remain plaintext such as the Payload Length Indicator (PLI) field used for multiplexing and the Port-ID field used for mapping subscribers' Optical Network Terminals/Units(ONTs/ONUs) (typically called "modem").
 
-Such plaintext fields may appear innocuous. However, recent studies have demonstrated that such metadata can be exploited to infer a victim's activity (e.g., identifying a victim's web-based video streaming watching activity) ~\cite{bae-sec22}~\cite{ytyt}~\cite{ytyt2}.
+Such plaintext fields may appear innocuous. However, recent studies have demonstrated that such metadata may be exploited to infer a victim's activity (e.g., identifying a victim's web-based video streaming watching activity) ~\cite{bae-sec22}~\cite{ytyt}~\cite{ytyt2}.
 
 While prior studies primarily focused on upper layer or cellular traffic analysis~\cite{bae-sec22}~\cite{ytyt}, we researched whether the plaintext PLI field in GEM headers can be exploited to infer a victim's streaming activity.
 
@@ -439,9 +439,9 @@ Upper layer traffic (e.g., Ethernet frame) is carried in the Payload Field in GE
 
 \textbf{PLI length even under encryption.}
 In GPON, downstream user traffic is carried as GEM frames multiplexed in the GTC payload~\cite{itu-g9843}.
-Each GEM header includes a plantext PLI field that specifies the payload length $L$ in bytes (up to 4095 bytes). In certain cases, larger payload values are fragmented accordingly~\cite{itu-g9843}(where PTI is used to indicate whether a GEM payload is a end of a fragment or not).
-Downstream GEM encryption only encrypts only payload field(not GEM header) using AES-CTR.
-Since AES-CTR Encrypytion is length-preserving. even when payload bytes are encrypted, an attacker can observe the plaintext payload length.
+Each GEM header includes a plaintext PLI field that specifies the payload length $L$ in bytes (up to 4095 bytes). In certain cases, larger payload values are fragmented accordingly~\cite{itu-g9843}(where PTI is used to indicate whether a GEM payload is a end of a fragment or not).
+Downstream GEM encryption only encrypts payload field(not GEM header) using AES-CTR.
+Since AES-CTR Encryption is length-preserving. even when payload bytes are encrypted, an attacker can observe the plaintext payload length.
 
 \textbf{Video Identification.} HTTP Adaptive Streaming (HAS) is the popular video streaming model -- which is generally adopted by video streaming platforms (e.g., Youtube) --delivers video by letting the client periodically request short media segments at a bitrate chosen by an adaptive bitrate (ABR) algorithm. This request--response process forms characteristic bursty download patterns and bitrate-dependent segment sizes, which can be exploited for traffic inference.~\cite{bae-sec22}
 
@@ -540,7 +540,7 @@ Using nearest matching with rank voting over Pearson and RMSE, we achieve 90\% T
 %We further quantify similarity using distance-based metrics on the normalized cumulative PLI time series: same-video pairs yield smaller distances than different-video pairs (median RMSE: 0.040 vs 0.088, AUC=0.813; median DTW: 0.031 vs 0.061, AUC=0.776).
 
 \section{Conclusion And Discussion}
-Despite GEM Payload Encryption, GPON is still vulnerable to inferring streaming activity because PLI values in GEM headers can be exploited to infer a victim’s video activity (e.g., Youtube). 
+Despite GEM Payload Encryption, GPON may remain vulnerable to streaming inference because PLI values in GEM headers can be exploited to infer a victim’s video activity (e.g., Youtube). 
 Potential mitigations include traffic shaping and obfuscating GEM metadata.
 
 Future Work will be conducted in testbed with Real OLT, ONU and Optical Splitter. We will use FPGA device to capture GEM frames to parse downstream frames. We will expand to more videos and longer captures with changing various resolution, bitrate.
