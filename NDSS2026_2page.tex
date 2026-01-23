@@ -385,7 +385,7 @@
 % As a general rule, do not put math, special symbols or citations
 % in the abstract
 \begin{abstract}
-Gigabit Passive Optical Networks (GPON), an ITU-T standardized technology adopted in FTTH networks, supports downstream payload encryption to protect subscribers' traffic. Unfortunately, encryption does not cover all access-layer metadata. This poster presents a preliminary analysis demonstrating that the Payload Length Indicator (PLI), which remains in plaintext in GEM headers, can be exploited as a side channel to infer streaming activity. Using a GPON downstream simulator, We demonstrate that PLI traces are highly consistent across repeated runs of the same video and suggest that a passive attacker on the same optical splitter as the victim could potentially infer a victim's streaming activity (e.g., Youtube Video Identification). 
+Gigabit Passive Optical Networks (GPON), an ITU-T standardized technology adopted in FTTH networks, supports downstream payload encryption to protect subscribers' traffic. Unfortunately, encryption does not cover all access layer metadata. This poster presents a preliminary analysis demonstrating that the Payload Length Indicator (PLI), which remains in plaintext in GEM headers, can be exploited as a side channel to infer streaming activity. Using a GPON downstream simulator, We demonstrate that PLI traces are highly consistent across repeated runs of the same Youtube video and suggest that a passive attacker on the same optical splitter as the victim could potentially infer a victim's streaming activity (e.g., Youtube Video Identification). 
 \end{abstract}
 
 
@@ -409,13 +409,13 @@ Gigabit Passive Optical Networks (GPON), an ITU-T standardized technology adopte
 
 \section{Introduction And Motivation}
 As fiber internet has become dominant in network infrastructures, GPON--one of the passive optical network (PON) technologies--is adopted by many ISPs to provide fiber-to-the-home (FTTH) internet. Since GPON is a popular PON technology, it is important to ensure traffic confidentiality. 
- GPON supports AES-based downstream payload encryption at the GPON Encapsulation Method (GEM) layer. However, some fields in the GEM header remain plaintext such as the Payload Length Indicator (PLI) field used for multiplexing and the Port-ID field used for mapping subscribers' Optical Network Terminals/Units(ONTs/ONUs).
+ GPON supports AES-based downstream payload encryption at the GPON Encapsulation Method (GEM) layer. However, some fields in the GEM header remain plaintext such as the Payload Length Indicator (PLI) field used for multiplexing and the Port-ID field used for mapping subscribers' Optical Network Terminals/Units(ONTs/ONUs) (typically called "modem").
 
 Such plaintext fields may appear innocuous. However, recent studies have demonstrated that such metadata can be exploited to infer a victim's activity (e.g., identifying a victim's web-based video streaming watching activity) ~\cite{bae-sec22}~\cite{ytyt}~\cite{ytyt2}.
 
-While prior studies primarily focused on upper-layer or cellular traffic analysis~\cite{bae-sec22}~\cite{ytyt}, we researched whether the PLI field in GEM headers can be exploited to fingerprint a victim's streaming activity.
+While prior studies primarily focused on upper layer or cellular traffic analysis~\cite{bae-sec22}~\cite{ytyt}, we researched whether the plaintext PLI field in GEM headers can be exploited to infer a victim's streaming activity.
 
-In this poster, We developed a software-based GPON downstream simulator to analyze the statistical properties of PLI traces. Our preliminary results indicate that Youtube streaming traces are highly consistent over time and distinctive at the GEM layer, suggesting that value of the PLI field can be exploited to infer victim's video streaming.
+In this poster, We developed a software-based GPON downstream simulator to analyze the statistical properties of PLI traces. Using these PLI traces, we present preliminary evidence that Youtube streaming traces are highly consistent over time and distinctive at the GEM layer, suggesting that value of the PLI field can be exploited to infer victim's video streaming.
 
 \section{Background}  
 
@@ -430,18 +430,18 @@ In this poster, We developed a software-based GPON downstream simulator to analy
 
 %\textbf{GEM Framing.} Upper layer traffic (e.g., Ethernet frames) are carried in the GEM Payload Field transmitted via GPON Encapsulation Method (GEM) Frames. Downstream GEM payloads are often AES encrypted for confidentiality (depending on ISP configuration~\cite{itu-g9843}). However, the GEM Port-ID (used to demultiplex) and the Payload Length Indicator (PLI), which encodes the payload size, are transmitted in plaintext. Thus, an attacker can extract a victim’s encrypted payload lengths from consecutive PLI values (optionally grouped by Port-ID), even without decrypting the payload contents.
 \textbf{GPON framing.}
-In GPON, the Optical Line Terminal (OLT) broadcasts downstream traffic over a passive optical splitter to multiple Optical Network Units (ONUs) (typically called "modem"). Downstream transmission is organized into fixed-duration GTC frames (125~$\mu$s), each composed of a physical control block downstream (PCBd) followed by a downstream GTC payload region.
+In GPON, the Optical Line Terminal (OLT) broadcasts downstream traffic over a passive optical splitter to multiple Optical Network Units (ONUs) (typically called "modem"). Downstream transmission is organized into fixed duration GTC frames (125~$\mu$s), each composed of a physical control block downstream (PCBd) followed by a downstream GTC payload region.
 ~\cite{itu-g9843} % Fig. 8-1 / 8-2
 
 \textbf{GEM and plaintext metadata.}
-Upper layer traffic (e.g., Ethernet frame) is carried in the Payload Field in GEM frames. A GEM frame starts with a 5-byte GEM header containing a 12-bit PLI, a 12-bit Port-ID, a 3-bit Payload Type Indicator (PTI), and a header error control (HEC). The 12-bit PLI allows payload fragments up to 4095 bytes, so larger user frames may be fragmented. PTI indicates whether the payload is a non-terminal fragment or the end of a fragmented user frame.%
+Upper layer traffic (e.g., Ethernet frame) is carried in the Payload Field in GEM frames. A GEM frame starts with a 5 byte GEM header containing a 12 bit PLI, a 12 bit Port-ID, a 3 bit Payload Type Indicator (PTI), and a header error control (HEC) field. PTI indicates whether the payload is the end of a fragmented payload or not.%
 ~\cite{itu-g9843} % Fig. 8-11 + PLI/PTI text
 
 \textbf{PLI  plaintext length even under encryption.}
 In GPON, downstream user traffic is carried as GEM frames multiplexed in the GTC payload~\cite{itu-g9843}.
-Each GEM header includes a 12-bit payload length indicator (PLI) that specifies the payload length $L$ in bytes (up to 4095 bytes), and larger user frames are fragmented accordingly~\cite{itu-g9843}.
-Downstream GEM payloads are often encrypted using AES in CTR mode (XOR-based stream encryption).
-Therefore, even when payload bytes are encrypted, an attacker can observe the plaintext payload length per fragment via PLI.
+Each GEM header includes a 12 bit payload length indicator (PLI) that specifies the payload length $L$ in bytes (up to 4095 bytes). In certain cases, larger payload values are fragmented accordingly~\cite{itu-g9843}(where PTI is used to indicate whether a GEM payload is a end of a fragment or not).
+Downstream GEM payloads are often encrypted using AES in CTR mode (XOR-based encryption).
+Therefore, even when payload bytes are encrypted, an attacker can observe the plaintext payload length per fragment via value of PLI.
 
 \textbf{Video Identification.} HTTP Adaptive Streaming (HAS) is the popular video streaming model -- which is generally adopted by video streaming platforms (e.g., Youtube) --delivers video by letting the client periodically request short media segments at a bitrate chosen by an adaptive bitrate (ABR) algorithm. This request--response process forms characteristic bursty download patterns and bitrate-dependent segment sizes, which can be exploited for traffic inference.~\cite{bae-sec22}
 
@@ -463,15 +463,14 @@ the attacker does not need to register their device with OLT; so even if they us
 %  \label{fig:attacker-pipeline}
 %\end{figure}
 \section{Trace Generation}
-To demonstrate the threat model in our experimental environment, we developed a PCAP-driven, software-based GPON downstream trace generator~\cite{github} that follows key ITU-T G.984.3 TC-layer parameters relevant to PLI (125~$\mu$s framing and GEM header formatting). From a PCAP of encrypted video traffic, we (i) map Ethernet frames into GEM payloads (fragmenting to satisfy the 12-bit PLI limit), (ii) generate plaintext GEM headers (PLI/Port-ID/PTI/HEC), and (iii) pack the GEM stream into fixed-length 125~$\mu$s downstream frames consistent with the configured line rate. The attacker signal is either the GEM-level PLI sequence or the per-frame occupancy series. Large Ethernet packets may generate multiple consecutive GEM fragments; thus, PLI values in our traces reflect per-fragment payload lengths (the attacker-visible observable).
+To demonstrate the threat model in our experimental environment, we developed a software based GPON downstream trace generator~\cite{github} that follows key ITU-T G.984.3 TC-layer parameters relevant to PLI (125~$\mu$s framing and GEM header formatting). From a downlink ethernet packet capture file of encrypted video traffic, we (i) map Ethernet frames into GEM payloads (fragmenting to satisfy the 12 bit PLI limit), (ii) generate plaintext GEM headers (PLI/Port-ID/PTI), and (iii) pack the GEM stream into fixed-length 125~$\mu$s downstream frames consistent with the configured line rate. The attacker signal is either the GEM-level PLI sequence or the per-frame occupancy series. Large Ethernet packets may generate multiple GEM fragments; thus, PLI values in our traces reflect per fragment payload lengths (the attacker-visible observable).
 
-\textbf{Encryption note (PLI invariance).} Payload bytes can optionally be AES-CTR protected; however, this does not change the PLI trace because AES-CTR is length-preserving (XOR), so encryption does not alter any fragment length. Our analysis uses only plaintext headers (e.g., PLI) and timing.
+\textbf{Note.} Payload bytes can optionally be AES-CTR protected; however, this does not change the PLI trace because AES-CTR is length-preserving (XOR), so encryption does not change any fragment length. Our analysis uses only plaintext headers (e.g., PLI) and timing.
 \section{Experiment and Preliminary Results}
-First, we played each of 10 videos (three runs each) on Ubuntu 24.04 under a fixed playback quality and resolution setting (720p). To minimize interference, we restricted other background traffic (e.g., VNC, SSH) during playback. For each run, we captured downlink ethernet packet (PCAP) for 180 seconds. Then, we replayed each PCAP file in our simulator to record the resulting PLI values and timestamps as CSV traces. We preserve original PCAP packet timestamps to retain idle periods and burstiness; each synthesized GEM is assigned t\_start\_us derived from the PCAP time base (µs resolution). For similarity analysis, we bin PLI events into 100-ms bins, compute the cumulative sum, normalize by the final cumulative value, and compare traces using Pearson correlation and RMSE.
+First, we played each of 10 videos (three runs each; run1, run2, run3) on Ubuntu 24.04 under a fixed playback quality and resolution setting (720p). To minimize interference, we restricted other background traffic (e.g., VNC, SSH) during playback. For each run, we captured downlink ethernet packet (PCAP) for 180 seconds. Then, we replayed each PCAP file in our simulator to produce a CSV dataset of PLI values and timestamps(one trace per run) (e.g., vid001\_run001.gem.csv~\cite{github}). We preserve original PCAP packet timestamps to retain idle periods and burstiness; each synthesized GEM is assigned t\_start\_us derived from the PCAP time base (µs resolution). After producing the dataset, we visualized cumulative PLI--Time Plot based on our dataset(Publicly Available on our Github repository)~\cite{github}. We observed a clear correlation between each video and its cumulative PLI over time graph~\cite{github}; traces from the same video show highly consistent slopes across runs.(Our Github repository: \//out\_cumsum)
+For similarity analysis, we bin PLI events into 100ms bins, compute the cumulative sum, normalize by the final cumulative value, and compare traces using Pearson correlation and RMSE.
 These traces approximate the payload length observations available to a real same-splitter adversary and enable systematic evaluation of PLI based inference.
-
-After producing the dataset, we visualized cumulative PLI--Time Plot based on our dataset(Publicly Available on our Github repository)~\cite{github}. We observed a clear correlation between each video and its cumulative PLI over time graph~\cite{github}; traces from the same video show highly consistent slopes across runs.(Our Github repository: \//out\_cumsum)
-We use run1,2 as a database and treat run3 as a query trace.
+We use run1,2 dataset files as a database and run3 dataset files as a query trace.
 %\FloatBarrier 
 %\begin{figure}[t]
 %  \centering
@@ -505,7 +504,7 @@ We use run1,2 as a database and treat run3 as a query trace.
 %    {\small (b) DTW distance (lower = more similar)}
 %  \end{minipage}
 %  \caption{Distance distributions for same-video pairs (intra-video) and different video pairs (inter-video) yielded from cumulative PLI traces. Same video pairs have smaller distances than different video pairs. We found a partial intersection due to ABR variability and buffering, but the distinction is sufficient for discrimination}
-\caption{Similarity distributions between same-video and different-video cumulative PLI traces. Same-video pairs tend to show higher correlation and smaller distance, with partial overlap due to ABR variability and buffering.}
+\caption{Similarity distributions between same-video and different-video cumulative PLI traces. Same video pairs tend to show higher correlation and RMSE smaller distance. We found a partial intersection due to ABR variability and buffering, but the distinction is sufficient for discrimination using both RMSE and Pearson}
 %%기존\caption{Distance distributions between same-video (intra) and different-video (inter) cumulative PLI traces. Same-video pairs tend to yield smaller distances, with partial overlap due to ABR variability and buffering.}
 
   \label{fig:pli-metrics}
@@ -536,8 +535,8 @@ We use run1,2 as a database and treat run3 as a query trace.
   \end{tabular}
 \end{table}
 \vspace{-0.9em}
-We further quantify similarity on the normalized cumulative PLI time series: same video pairs exhibit higher Pearson correlation (median $r=0.991$ vs $0.970$, AUC=0.779) and lower RMSE (median 0.048 vs 0.098, AUC=0.826).
-Using nearest-neighbor matching with rank-vote fusion of Pearson and RMSE (vote\_pr), we achieve 90\% Top-1 identification accuracy (9/10) when matching run3 queries against run1--run2 gallery traces.
+We quantify similarity on the normalized cumulative PLI time series: same video pairs exhibit higher Pearson correlation (median $r=0.991$ vs $0.970$, AUC=0.779) and lower RMSE (median 0.048 vs 0.098, AUC=0.826).
+Using nearest matching with rank voting over Pearson and RMSE, we achieve 90\% Top-1 identification accuracy (9/10) when matching run3 queries against run1,run2 query traces.
 %We further quantify similarity using distance-based metrics on the normalized cumulative PLI time series: same-video pairs yield smaller distances than different-video pairs (median RMSE: 0.040 vs 0.088, AUC=0.813; median DTW: 0.031 vs 0.061, AUC=0.776).
 
 \section{Conclusion And Discussion}
